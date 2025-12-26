@@ -6,4 +6,5 @@ export interface ArchiveData {
   終了時間: string;
   URL: string;
   シーズン: "Season1" | "Season2";
+  カテゴリ: string;
 }

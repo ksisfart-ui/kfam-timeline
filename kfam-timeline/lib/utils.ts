@@ -1,18 +1,21 @@
 // 場所名から一意のパステルカラーを生成
-export function getLocationColor(location: string): string {
-  const fixedColors: Record<string, string> = {
-    "病院": "#ff9ea0", "警察": "#8ebaff", "飲食店": "#ffe45e",
-    "自宅": "#d1a3ff", "メカニック": "#a3e635"
-  };
+export const CATEGORY_COLORS: Record<string, string> = {
+  "警察": "#8ebaff",
+  "医療": "#ff9ea0",
+  "メカニック": "#a3e635",
+  "飲食店": "#ffe45e",
+  "自宅": "#e2e8f0",
+  "住民の家": "#f87171",
+};
 
-  if (fixedColors[location]) return fixedColors[location];
+export function getLocationColor(item: any): string {
+  if (CATEGORY_COLORS[item.カテゴリ]) return CATEGORY_COLORS[item.カテゴリ];
 
   let hash = 0;
-  for (let i = 0; i < location.length; i++) {
-    hash = location.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < item.場所.length; i++) {
+    hash = item.場所.charCodeAt(i) + ((hash << 5) - hash);
   }
-  // 少し彩度を上げ、明度を調整して「ぼんやり」を解消
-  return `hsl(${Math.abs(hash) % 360}, 65%, 75%)`;
+  return `hsl(${Math.abs(hash) % 360}, 60%, 80%)`;
 }
 
 // メンバーカラー定義
@@ -23,6 +26,14 @@ export const MEMBER_COLORS: Record<string, string> = {
 };
 
 // 場所の読みがな辞書（必要に応じて追加してください）
-export const LOCATION_READING_MAP: Record<string, string> = {
-  "アパート": "あぱーと", "自宅": "じたく", "東署": "ひがししょ", "本署": "ほんしょ", "ボイラ宅": "ぼいらたく", "海上レストラン": "かいじょうれすとらん", "FOWK": "ふぉーく", "教習所": "きょうしゅうじょ", "病院": "びょういん"
+export const LOCATION_READING_MAP: Record<string, string[]> = {
+  "アパート": ["あぱーと", "いえ"],
+  "自宅": ["じたく", "いえ"],
+  "東署": ["ひがししょ", "けいさつ"],
+  "本署": ["ほんしょ", "けいさつ"],
+  "ボイラ宅": ["ぼいらたく"],
+  "海上レストラン": ["海上レストラン", "うらしま", "urashima"],
+  "FOWK": ["ふぉーく"],
+  "教習所": ["きょうしゅうじょ", "めんきょ"],
+  "病院": ["びょういん"],
 };
