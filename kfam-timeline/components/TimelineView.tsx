@@ -141,7 +141,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                             </div>
                           </div>
                         )
-                      )
+                      </
                     )}
                   </div>
                 </div>
