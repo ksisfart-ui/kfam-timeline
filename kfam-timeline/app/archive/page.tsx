@@ -1,6 +1,9 @@
-import { fetchArchiveData } from "@/lib/dataFetcher";
-import { groupDatesByMonth } from "@/lib/utils";
+import { fetchArchiveData } from "@/lib/dataFetcher"; // これを追加
+import TimelineView from "@/components/TimelineView";
 import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
+
+export const dynamic = 'force-dynamic';
 
 export default async function ArchivePage() {
   const allData = await fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "");
