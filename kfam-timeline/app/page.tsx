@@ -6,7 +6,7 @@ import Link from "next/link";
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
-  const allData = await fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "");
+  const allData = await fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "https://docs.google.com/spreadsheets/d/e/2PACX-1vQllXTe8yJ2cUzt0Md11z_qHzbjgRjFRbnyVp7zf7SNRm-LKIoAR_JAkT0h8ZfwN-t2VbaTHMNAb58J/pub?output=csv");
   const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();
   const latestDate = dateList[0];
   const latestData = allData.filter(d => d.日付 === latestDate);
