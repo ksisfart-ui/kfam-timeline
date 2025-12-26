@@ -41,7 +41,7 @@ return (
           スプレッドシートのCSV公開URLが設定されているか確認してください。
         </p>
         <code className="bg-black p-4 rounded text-xs text-green-400 overflow-auto max-w-full">
-          URL: {CSV_URL || "未設定"}
+          URL: {CSV_URL || "https://docs.google.com/spreadsheets/d/e/2PACX-1vQllXTe8yJ2cUzt0Md11z_qHzbjgRjFRbnyVp7zf7SNRm-LKIoAR_JAkT0h8ZfwN-t2VbaTHMNAb58J/pub?output=csv"}
         </code>
       </div>
     );
