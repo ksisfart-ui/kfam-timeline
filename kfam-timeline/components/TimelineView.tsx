@@ -140,7 +140,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                               <p className="text-[10px] text-stone-300">時間: {item.開始時間} 〜 {item.終了時間}</p>
                             </div>
                           </div>
-                        )
+                        );
                     )}
                   </div>
                 </div>
