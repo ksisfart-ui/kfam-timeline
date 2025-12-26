@@ -1,62 +1,95 @@
 import { fetchArchiveData } from "@/lib/dataFetcher";
 import { getTimeLabels } from "@/lib/timeUtils";
 import TimelineRow from "@/components/TimelineBar";
+import Link from "next/link";
 
-export default async function Page({ searchParams }: { searchParams: any }) {
-  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQllXTe8yJ2cUzt0Md11z_qHzbjgRjFRbnyVp7zf7SNRm-LKIoAR_JAkT0h8ZfwN-t2VbaTHMNAb58J/pub?output=csv";
-  const data = await fetchArchiveData(CSV_URL);
+// キャッシュを保持せず常に最新を取得する設定
+export const dynamic = 'force-dynamic';
 
-  // フィルター処理用のパラメータ（簡易実装）
-  const selectedDate = searchParams.date || data[0]?.日付;
-  const filteredData = data.filter(d => d.日付 === selectedDate);
+export default async function Page(props: { searchParams: Promise<{ date?: string, member?: string }> }) {
+  const searchParams = await props.searchParams;
+  const CSV_URL = process.env.NEXT_PUBLIC_SHEET_URL || "";
+  const allData = await fetchArchiveData(CSV_URL);
 
-  // メンバーごとにグループ化
-  const members = Array.from(new Set(data.map(d => d.暦家)));
-  const season = filteredData[0]?.シーズン || "Season2";
-  const timeLabels = getTimeLabels(season);
+  // 日付一覧を取得（重複排除）
+  const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();
+
+  // 選択された日付（指定がなければ最新の日付）
+  const selectedDate = searchParams.date || dateList[0];
+
+  // 絞り込み
+  let filteredData = allData.filter(d => d.日付 === selectedDate);
+  if (searchParams.member) {
+    filteredData = filteredData.filter(d => d.暦家 === searchParams.member);
+  }
+
+  const members = Array.from(new Set(allData.map(d => d.暦家)));
+  const currentSeason = filteredData[0]?.シーズン || "Season2";
+  const timeLabels = getTimeLabels(currentSeason);
 
   return (
-    <main className="min-h-screen bg-black text-gray-100 p-4 lg:p-8">
-      <header className="mb-8">
-        <h1 className="text-2xl font-bold mb-4">暦家タイムラインアーカイブ</h1>
-        <div className="flex gap-4 overflow-x-auto pb-2">
-          {/* 日付選択ボタン */}
-          {Array.from(new Set(data.map(d => d.日付))).map(date => (
-            <a
-              key={date}
-              href={`?date=${date}`}
-              className={`px-4 py-2 rounded-full whitespace-nowrap ${selectedDate === date ? 'bg-blue-600' : 'bg-gray-800'}`}
-            >
-              {date}
-            </a>
-          ))}
+    <main className="min-h-screen bg-[#121212] text-[#e0e0e0] font-sans">
+      {/* ヘッダー：既存サイトの雰囲気に合わせる */}
+      <header className="border-b border-[#b28c6e]/30 bg-[#1a1a1a] p-4 lg:px-8 shadow-xl">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <h1 className="text-xl font-black tracking-tighter text-[#b28c6e]">
+            KOYOMI-KE <span className="text-white/50 font-light">TIMELINE</span>
+          </h1>
+
+          <nav className="flex gap-2 overflow-x-auto no-scrollbar">
+            {dateList.slice(0, 7).map(date => (
+              <Link
+                key={date}
+                href={`?date=${date}`}
+                className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${
+                  selectedDate === date
+                    ? 'bg-[#b28c6e] text-black'
+                    : 'bg-white/5 hover:bg-white/10 text-white/70'
+                }`}
+              >
+                {date.replace("2025/", "")}
+              </Link>
+            ))}
+          </nav>
         </div>
       </header>
 
-      <div className="overflow-x-auto border border-gray-800 rounded-lg">
-        <div className="min-w-[1000px] relative">
-          {/* 時間目盛り */}
-          <div className="flex border-b border-gray-800 bg-gray-950">
-            <div className="w-32 flex-shrink-0 border-r border-gray-800 p-2 text-center text-xs text-gray-500 italic">Member / Time</div>
-            <div className="flex-grow flex relative">
+      {/* タイムライン表示エリア */}
+      <div className="p-4 lg:p-8 max-w-[1600px] mx-auto">
+        <div className="bg-[#1a1a1a] border border-white/5 rounded-lg overflow-hidden shadow-2xl">
+
+          {/* 時間軸ラベル */}
+          <div className="flex border-b border-white/10 bg-black/20 overflow-x-auto overflow-y-hidden">
+            <div className="w-28 sm:w-32 flex-shrink-0 border-r border-white/10 p-4 text-[10px] uppercase tracking-widest text-white/30 font-bold sticky left-0 bg-[#1a1a1a] z-20">
+              Member
+            </div>
+            <div className="flex-grow flex min-w-[1000px] relative">
               {timeLabels.map((label, i) => (
-                <div key={i} className="flex-grow text-[10px] text-gray-500 p-2 border-l border-gray-800/50">
+                <div key={i} className="flex-grow text-[10px] text-white/40 p-4 border-l border-white/5 text-center">
                   {label}
                 </div>
               ))}
             </div>
           </div>
 
-          {/* メンバーごとの行 */}
-          {members.map(member => (
-            <TimelineRow
-              key={member}
-              member={member}
-              items={filteredData.filter(d => d.暦家 === member)}
-            />
-          ))}
+          {/* タイムライン本体 */}
+          <div className="overflow-x-auto">
+            <div className="min-w-[1000px] bg-grid-white/[0.02]">
+              {members.map(member => (
+                <TimelineRow
+                  key={member}
+                  member={member}
+                  items={filteredData.filter(d => d.暦家 === member)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
+
+      <footer className="p-8 text-center text-white/20 text-xs">
+        &copy; 2025 Koyomi-ke Archive Project
+      </footer>
     </main>
   );
 }
