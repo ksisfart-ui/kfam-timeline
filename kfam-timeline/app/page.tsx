@@ -5,8 +5,27 @@ import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
 
-export default async function Page(props: { searchParams: Promise<{ date?: string, member?: string }> }) {
-  const searchParams = await props.searchParams;
+export default async function Page() {
+  const allData = await fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "");
+  const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();
+  const latestDate = dateList[0];
+  const latestData = allData.filter(d => d.日付 === latestDate);
+
+return (
+    <div className="max-w-7xl mx-auto p-4 lg:p-8 space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-stone-400 text-xs font-bold uppercase tracking-widest">Latest Activity</h2>
+          <h1 className="text-3xl font-black text-stone-800">{latestDate}</h1>
+        </div>
+        <Link href="/archive" className="px-6 py-2 bg-[#b28c6e] text-white rounded-full text-sm font-bold shadow-lg shadow-[#b28c6e]/20 hover:scale-105 transition-all">
+          過去のアーカイブを見る
+        </Link>
+      </div>
+      <TimelineView data={latestData} date={latestDate} />
+    </div>
+  );
+}
 
   // Vercelの環境変数。未設定なら空文字
   const CSV_URL = process.env.NEXT_PUBLIC_SHEET_URL || "https://docs.google.com/spreadsheets/d/e/2PACX-1vQllXTe8yJ2cUzt0Md11z_qHzbjgRjFRbnyVp7zf7SNRm-LKIoAR_JAkT0h8ZfwN-t2VbaTHMNAb58J/pub?output=csv";
