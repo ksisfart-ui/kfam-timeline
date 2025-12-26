@@ -2,12 +2,6 @@ import { fetchArchiveData } from "@/lib/dataFetcher";
 import { groupDatesByMonth } from "@/lib/utils";
 import Link from "next/link";
 
-export const dynamic = 'force-dynamic';
-
-import { fetchArchiveData } from "@/lib/dataFetcher";
-import { groupDatesByMonth } from "@/lib/utils";
-import Link from "next/link";
-
 export default async function ArchivePage() {
   const allData = await fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "");
   const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();

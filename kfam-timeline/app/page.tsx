@@ -1,6 +1,4 @@
-import { fetchArchiveData } from "@/lib/dataFetcher";
 import TimelineView from "@/components/TimelineView";
-import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
 

@@ -47,7 +47,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="名前・場所で検索"
+              placeholder="名前・場所・ひらがなで検索"
               className="w-full pl-12 pr-4 py-3 bg-stone-100/50 border-none rounded-2xl text-sm outline-none focus:ring-2 focus:ring-[#b28c6e]/20"
               onChange={(e) => setQuery(e.target.value)}
             />
