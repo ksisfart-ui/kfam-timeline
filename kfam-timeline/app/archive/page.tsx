@@ -1,32 +1,54 @@
-import { fetchArchiveData } from "@/lib/dataFetcher"; // これを追加
-import TimelineView from "@/components/TimelineView";
+"use client";
+import React, { useState, useEffect } from 'react';
+import { fetchArchiveData } from "@/lib/dataFetcher";
 import { groupDatesByMonth } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+export default function ArchivePage() {
+  const [data, setData] = useState<string[]>([]);
+  const [selectedMonth, setSelectedMonth] = useState<string>("すべて");
 
-export default async function ArchivePage() {
-  const allData = await fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "");
-  const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();
-  const groupedDates = groupDatesByMonth(dateList);
+  useEffect(() => {
+    fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "").then(res => {
+      const dates = Array.from(new Set(res.map((d: any) => d.日付))).sort().reverse();
+      setData(dates as string[]);
+    });
+  }, []);
+
+  const groupedDates = groupDatesByMonth(data);
+  const months = ["すべて", ...Object.keys(groupedDates)];
 
   return (
     <main className="min-h-screen bg-[#fcfaf8] p-10">
       <div className="max-w-4xl mx-auto">
         <div className="mb-16">
-          <Link href="/" className="text-[#b28c6e] text-xs font-bold tracking-widest hover:opacity-70">← ホームへ戻る</Link>
+          <Link href="/" className="text-[#b28c6e] text-xs font-bold tracking-widest">← ホームへ戻る</Link>
           <h1 className="text-5xl font-black text-stone-800 mt-6 tracking-tighter">活動の軌跡</h1>
         </div>
 
-        {Object.entries(groupedDates).map(([month, dates]) => (
+        {/* 月別フィルター */}
+        <div className="flex gap-2 overflow-x-auto pb-8 no-scrollbar">
+          {months.map(month => (
+            <button
+              key={month}
+              onClick={() => setSelectedMonth(month)}
+              className={`px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${selectedMonth === month ? "bg-stone-800 text-white shadow-lg" : "bg-white text-stone-400 border border-stone-100"}`}
+            >
+              {month}
+            </button>
+          ))}
+        </div>
+
+        {Object.entries(groupedDates)
+          .filter(([month]) => selectedMonth === "すべて" || month === selectedMonth)
+          .map(([month, dates]) => (
           <div key={month} className="mb-12">
-            <h2 className="text-lg font-bold text-[#b28c6e] mb-6 border-b border-stone-200 pb-2">{month}</h2>
+            <h2 className="text-sm font-black text-[#b28c6e] mb-6 tracking-[0.2em]">{month}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {dates.map(date => (
-                <Link key={date} href={`/archive/${date.replaceAll("/", "-")}`} className="group p-6 bg-white rounded-3xl border border-stone-100 hover:border-[#b28c6e] transition-all hover:shadow-xl flex justify-between items-center">
-                  <span className="text-xl font-bold text-stone-700 group-hover:text-[#b28c6e] transition-colors">{date}</span>
-                  <div className="w-10 h-10 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-[#b28c6e]/10 group-hover:text-[#b28c6e] text-stone-300 transition-all">→</div>
+                <Link key={date} href={`/archive/${date.replaceAll("/", "-")}`} className="group p-8 bg-white rounded-[2rem] border border-stone-100 hover:border-[#b28c6e] transition-all hover:shadow-xl flex justify-between items-center">
+                  <span className="text-2xl font-bold text-stone-700 group-hover:text-[#b28c6e] transition-colors tracking-tighter">{date}</span>
+                  <div className="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-[#b28c6e]/10 group-hover:text-[#b28c6e] text-stone-200 transition-all text-xl">→</div>
                 </Link>
               ))}
             </div>
