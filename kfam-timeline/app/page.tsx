@@ -3,45 +3,61 @@ import { getTimeLabels } from "@/lib/timeUtils";
 import TimelineRow from "@/components/TimelineBar";
 import Link from "next/link";
 
-// キャッシュを保持せず常に最新を取得する設定
 export const dynamic = 'force-dynamic';
 
 export default async function Page(props: { searchParams: Promise<{ date?: string, member?: string }> }) {
   const searchParams = await props.searchParams;
-  const CSV_URL = process.env.NEXT_PUBLIC_SHEET_URL || "";
+
+  // Vercelの環境変数。未設定なら空文字
+  const CSV_URL = process.env.NEXT_PUBLIC_SHEET_URL || "https://docs.google.com/spreadsheets/d/e/2PACX-1vQllXTe8yJ2cUzt0Md11z_qHzbjgRjFRbnyVp7zf7SNRm-LKIoAR_JAkT0h8ZfwN-t2VbaTHMNAb58J/pub?output=csv";
   const allData = await fetchArchiveData(CSV_URL);
 
-  // 日付一覧を取得（重複排除）
-  const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();
+  // 1. データが取得できなかった場合の表示
+  if (!allData || allData.length === 0) {
+    return (
+      <div className="min-h-screen bg-[#121212] text-white flex flex-col items-center justify-center p-4">
+        <h1 className="text-[#b28c6e] font-bold mb-4">データが取得できません</h1>
+        <p className="text-sm text-gray-400 mb-8 text-center">
+          Vercelの環境変数 `NEXT_PUBLIC_SHEET_URL` に<br />
+          スプレッドシートのCSV公開URLが設定されているか確認してください。
+        </p>
+        <code className="bg-black p-4 rounded text-xs text-green-400 overflow-auto max-w-full">
+          URL: {CSV_URL || "未設定"}
+        </code>
+      </div>
+    );
+  }
 
-  // 選択された日付（指定がなければ最新の日付）
+  // 2. 日付リストの生成
+  const dateList = Array.from(new Set(allData.map(d => d.日付))).filter(Boolean).sort().reverse();
   const selectedDate = searchParams.date || dateList[0];
 
-  // 絞り込み
+  // 3. データの絞り込み
   let filteredData = allData.filter(d => d.日付 === selectedDate);
   if (searchParams.member) {
     filteredData = filteredData.filter(d => d.暦家 === searchParams.member);
   }
 
-  const members = Array.from(new Set(allData.map(d => d.暦家)));
+  const members = Array.from(new Set(allData.map(d => d.暦家))).filter(Boolean);
   const currentSeason = filteredData[0]?.シーズン || "Season2";
   const timeLabels = getTimeLabels(currentSeason);
 
   return (
     <main className="min-h-screen bg-[#121212] text-[#e0e0e0] font-sans">
-      {/* ヘッダー：既存サイトの雰囲気に合わせる */}
       <header className="border-b border-[#b28c6e]/30 bg-[#1a1a1a] p-4 lg:px-8 shadow-xl">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h1 className="text-xl font-black tracking-tighter text-[#b28c6e]">
-            KOYOMI-KE <span className="text-white/50 font-light">TIMELINE</span>
-          </h1>
+          <Link href="/">
+            <h1 className="text-xl font-black tracking-tighter text-[#b28c6e] cursor-pointer">
+              KOYOMI-KE <span className="text-white/50 font-light">TIMELINE</span>
+            </h1>
+          </Link>
 
-          <nav className="flex gap-2 overflow-x-auto no-scrollbar">
-            {dateList.slice(0, 7).map(date => (
+          <nav className="flex gap-2 overflow-x-auto no-scrollbar py-1">
+            {dateList.map(date => (
               <Link
                 key={date}
                 href={`?date=${date}`}
-                className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${
+                className={`px-4 py-1.5 rounded text-xs font-bold transition-all whitespace-nowrap ${
                   selectedDate === date
                     ? 'bg-[#b28c6e] text-black'
                     : 'bg-white/5 hover:bg-white/10 text-white/70'
@@ -54,12 +70,9 @@ export default async function Page(props: { searchParams: Promise<{ date?: strin
         </div>
       </header>
 
-      {/* タイムライン表示エリア */}
       <div className="p-4 lg:p-8 max-w-[1600px] mx-auto">
         <div className="bg-[#1a1a1a] border border-white/5 rounded-lg overflow-hidden shadow-2xl">
-
-          {/* 時間軸ラベル */}
-          <div className="flex border-b border-white/10 bg-black/20 overflow-x-auto overflow-y-hidden">
+          <div className="flex border-b border-white/10 bg-black/20 overflow-x-auto">
             <div className="w-28 sm:w-32 flex-shrink-0 border-r border-white/10 p-4 text-[10px] uppercase tracking-widest text-white/30 font-bold sticky left-0 bg-[#1a1a1a] z-20">
               Member
             </div>
@@ -72,9 +85,8 @@ export default async function Page(props: { searchParams: Promise<{ date?: strin
             </div>
           </div>
 
-          {/* タイムライン本体 */}
           <div className="overflow-x-auto">
-            <div className="min-w-[1000px] bg-grid-white/[0.02]">
+            <div className="min-w-[1000px]">
               {members.map(member => (
                 <TimelineRow
                   key={member}
@@ -86,10 +98,6 @@ export default async function Page(props: { searchParams: Promise<{ date?: strin
           </div>
         </div>
       </div>
-
-      <footer className="p-8 text-center text-white/20 text-xs">
-        &copy; 2025 Koyomi-ke Archive Project
-      </footer>
     </main>
   );
 }
