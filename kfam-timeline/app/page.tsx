@@ -1,65 +1,62 @@
-import Image from "next/image";
+import { fetchArchiveData } from "@/lib/dataFetcher";
+import { getTimeLabels } from "@/lib/timeUtils";
+import TimelineRow from "@/components/TimelineBar";
 
-export default function Home() {
+export default async function Page({ searchParams }: { searchParams: any }) {
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQllXTe8yJ2cUzt0Md11z_qHzbjgRjFRbnyVp7zf7SNRm-LKIoAR_JAkT0h8ZfwN-t2VbaTHMNAb58J/pub?output=csv";
+  const data = await fetchArchiveData(CSV_URL);
+
+  // フィルター処理用のパラメータ（簡易実装）
+  const selectedDate = searchParams.date || data[0]?.日付;
+  const filteredData = data.filter(d => d.日付 === selectedDate);
+
+  // メンバーごとにグループ化
+  const members = Array.from(new Set(data.map(d => d.暦家)));
+  const season = filteredData[0]?.シーズン || "Season2";
+  const timeLabels = getTimeLabels(season);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+    <main className="min-h-screen bg-black text-gray-100 p-4 lg:p-8">
+      <header className="mb-8">
+        <h1 className="text-2xl font-bold mb-4">暦家タイムラインアーカイブ</h1>
+        <div className="flex gap-4 overflow-x-auto pb-2">
+          {/* 日付選択ボタン */}
+          {Array.from(new Set(data.map(d => d.日付))).map(date => (
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              key={date}
+              href={`?date=${date}`}
+              className={`px-4 py-2 rounded-full whitespace-nowrap ${selectedDate === date ? 'bg-blue-600' : 'bg-gray-800'}`}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {date}
+            </a>
+          ))}
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+      </header>
+
+      <div className="overflow-x-auto border border-gray-800 rounded-lg">
+        <div className="min-w-[1000px] relative">
+          {/* 時間目盛り */}
+          <div className="flex border-b border-gray-800 bg-gray-950">
+            <div className="w-32 flex-shrink-0 border-r border-gray-800 p-2 text-center text-xs text-gray-500 italic">Member / Time</div>
+            <div className="flex-grow flex relative">
+              {timeLabels.map((label, i) => (
+                <div key={i} className="flex-grow text-[10px] text-gray-500 p-2 border-l border-gray-800/50">
+                  {label}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* メンバーごとの行 */}
+          {members.map(member => (
+            <TimelineRow
+              key={member}
+              member={member}
+              items={filteredData.filter(d => d.暦家 === member)}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          ))}
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
