@@ -48,7 +48,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 w-4 h-4" />
           <input
             type="text"
-            placeholder="名前・場所・ひらがなで検索"
+            placeholder="名前・場所・店名で検索"
             className="w-full pl-10 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm text-stone-800 placeholder-stone-400 focus:ring-2 focus:ring-[#b28c6e]/30 outline-none"
             onChange={(e) => setQuery(e.target.value)}
           />
@@ -173,6 +173,8 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       lane.map((item, i) => {
                         const start = getPosition(item.開始時間, item.シーズン);
                         const end = getPosition(item.終了時間, item.シーズン);
+                        const isShort = end - start < 3; // 滞在が短い場合
+
                         return (
                           <div
                             key={`${laneIdx}-${i}`}
@@ -186,7 +188,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                             }}
                             onClick={() => setSelectedItem(item)}
                           >
-                            <span className="truncate">{item.場所}</span>
+                            <span className="truncate font-bold">{item.場所}</span>
                           </div>
                         );
                       })
