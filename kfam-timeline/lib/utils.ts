@@ -1,3 +1,6 @@
+import { getPosition } from "./timeUtils";
+import { ArchiveData } from "@/types";
+
 // メンバーカラー定義
 export const MEMBER_COLORS: Record<string, string> = {
   "暦家": "#b28c6e", "にこ": "#e7609e", "いん": "#113c70", "ゆうみ": "#2ca9e1",
