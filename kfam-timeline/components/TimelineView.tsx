@@ -34,38 +34,30 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
     const sorted = [...items].sort((a, b) => a.開始時間.localeCompare(b.開始時間));
     const lanes: ArchiveData[][] = [];
     
-    // ★ここが調整の鍵です
-    // 実際の表示幅（1.2%）よりも小さい値を判定に使います。
-    // 0.1% は 24時間表示でおよそ 1.4分 相当です。
-    // 1分間隔の予定（0:30, 0:31, 0:32...）をジグザグにしたい場合は 0.1〜0.15 程度が理想です。
-    const COLLISION_THRESHOLD = 0.12; 
+    // 見た目の幅が 1.2% なので、判定幅を 0.8% 〜 1.0% 程度にします
+    // これにより「少し重なる（0.2%分くらい）なら同じ行」という挙動になります
+    const COLLISION_THRESHOLD = 0.9; 
 
     sorted.forEach(item => {
       let placed = false;
       const startPos = getPosition(item.開始時間, item.シーズン);
 
-      // 既存の段を順番にチェックし、最初に入れる段を見つける
       for (let i = 0; i < lanes.length; i++) {
         const lastItem = lanes[i][lanes[i].length - 1];
         const lastStartPos = getPosition(lastItem.開始時間, lastItem.シーズン);
         const lastActualEndPos = getPosition(lastItem.終了時間, lastItem.シーズン);
         
-        // その段の最後のアイテムが「判定上」いつ終わるか
-        // 「実際の終了時間」か「開始＋最小閾値」の遅い方を採用します
+        // 前のアイテムの「表示上の終わり」を計算
         const lastBusyUntil = Math.max(lastActualEndPos, lastStartPos + COLLISION_THRESHOLD);
 
-        // 前のアイテムの判定終了時間を過ぎていれば、その段を再利用する
         if (startPos >= lastBusyUntil) {
           lanes[i].push(item);
           placed = true;
           break;
         }
       }
-      
-      // どの段にも入らなければ新しい段を作る
       if (!placed) lanes.push([item]);
     });
-    
     return lanes;
   };
 
@@ -196,16 +188,17 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                                       return (
                                         <div
                                           key={`${lIdx}-${i}`}
-                                          className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
+                                          // z-20 を hover:z-30 に、widthにcalcを適用
+                                          className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.05] hover:z-30 z-20"
                                           style={{ 
                                             left: `${start}%`, 
-                                            width: `${barWidth}%`, 
+                                            width: `calc(${barWidth}% - 1px)`, // 1pxの隙間を作る
                                             top: `${lIdx * 44 + 6}px`,
                                             backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
                                           }}
                                           onClick={() => setSelectedItem(item)}
                                         >
-                                          {barWidth > 3 && <span className="truncate">{mName}</span>}
+                                          {barWidth > 1.5 && <span className="truncate">{mName}</span>}
                                         </div>
                                       );
                                     })
