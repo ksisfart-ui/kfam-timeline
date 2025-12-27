@@ -33,17 +33,38 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
   const getLanes = (items: ArchiveData[]) => {
     const sorted = [...items].sort((a, b) => a.開始時間.localeCompare(b.開始時間));
     const lanes: ArchiveData[][] = [];
+    
+    // 表示上の最小幅（%単位）。UI側の Math.max(..., 1.2) と合わせる
+    const MIN_WIDTH = 1.2; 
+
     sorted.forEach(item => {
       let placed = false;
+      
+      // このアイテムの表示上の開始位置と終了位置を計算
+      const startPos = getPosition(item.開始時間, item.シーズン);
+      const actualEndPos = getPosition(item.終了時間, item.シーズン);
+      // UIと同じく、最低でも MIN_WIDTH 分の幅を確保した「計算上の終了位置」
+      const visualEndPos = Math.max(actualEndPos, startPos + MIN_WIDTH);
+
       for (let i = 0; i < lanes.length; i++) {
-        if (item.開始時間 >= lanes[i][lanes[i].length - 1].終了時間) {
+        const lastItem = lanes[i][lanes[i].length - 1];
+        const lastStartPos = getPosition(lastItem.開始時間, lastItem.シーズン);
+        const lastActualEndPos = getPosition(lastItem.終了時間, lastItem.シーズン);
+        // 前のアイテムの「表示上の終了位置」
+        const lastVisualEndPos = Math.max(lastActualEndPos, lastStartPos + MIN_WIDTH);
+
+        // 前のアイテムの「表示上の終わり」よりも、今のアイテムの「開始」が後ろなら同じ段に入れる
+        // 少し（0.1%ほど）余裕を持たせるとより綺麗に見えます
+        if (startPos >= lastVisualEndPos + 0.1) {
           lanes[i].push(item);
           placed = true;
           break;
         }
       }
+      
       if (!placed) lanes.push([item]);
     });
+    
     return lanes;
   };
 
