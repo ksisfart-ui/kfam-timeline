@@ -10,7 +10,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
   const [query, setQuery] = useState("");
   const [viewMode, setViewMode] = useState<"member" | "location">("member");
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const [selectedItems, setSelectedItems] = useState<ArchiveData[] | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ArchiveData | null>(null);
 
   const timeLabels = getTimeLabels(data[0]?.シーズン || "Season2");
   const groupKeys = Array.from(new Set(data.map(d => viewMode === "member" ? d.暦家 : d.場所)));
@@ -33,26 +33,38 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
   const getLanes = (items: ArchiveData[]) => {
     const sorted = [...items].sort((a, b) => a.開始時間.localeCompare(b.開始時間));
     const lanes: ArchiveData[][] = [];
-    const COLLISION_THRESHOLD = 0.9; // 場所軸で程よくジグザグになる閾値
+    
+    // 表示上の最小幅（%単位）。UI側の Math.max(..., 1.2) と合わせる
+    const MIN_WIDTH = 1.2; 
 
     sorted.forEach(item => {
       let placed = false;
+      
+      // このアイテムの表示上の開始位置と終了位置を計算
       const startPos = getPosition(item.開始時間, item.シーズン);
+      const actualEndPos = getPosition(item.終了時間, item.シーズン);
+      // UIと同じく、最低でも MIN_WIDTH 分の幅を確保した「計算上の終了位置」
+      const visualEndPos = Math.max(actualEndPos, startPos + MIN_WIDTH);
 
       for (let i = 0; i < lanes.length; i++) {
         const lastItem = lanes[i][lanes[i].length - 1];
         const lastStartPos = getPosition(lastItem.開始時間, lastItem.シーズン);
         const lastActualEndPos = getPosition(lastItem.終了時間, lastItem.シーズン);
-        const lastBusyUntil = Math.max(lastActualEndPos, lastStartPos + COLLISION_THRESHOLD);
+        // 前のアイテムの「表示上の終了位置」
+        const lastVisualEndPos = Math.max(lastActualEndPos, lastStartPos + MIN_WIDTH);
 
-        if (startPos >= lastBusyUntil) {
+        // 前のアイテムの「表示上の終わり」よりも、今のアイテムの「開始」が後ろなら同じ段に入れる
+        // 少し（0.1%ほど）余裕を持たせるとより綺麗に見えます
+        if (startPos >= lastVisualEndPos + 0.1) {
           lanes[i].push(item);
           placed = true;
           break;
         }
       }
+      
       if (!placed) lanes.push([item]);
     });
+    
     return lanes;
   };
 
@@ -155,13 +167,21 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                         <div className="border-t border-stone-50 bg-stone-50/20 relative">
                           {membersAtLocation.map((mName) => {
                             const memberItems = items.filter(d => d.暦家 === mName);
-                            const memberLanes = getLanes(memberItems); // ここでスタック用のlanesを取得
+                            const memberLanes = getLanes(memberItems);
                             
                             return (
-                              <div key={mName} className="...">
+                              <div key={mName} className="flex border-b border-stone-50 last:border-b-0 items-stretch relative">
+                                {/* 場所軸の展開内にも縦線を追加 */}
                                 <TimeGrid />
-                                <div className="..."> {/* 左側名前ラベル */} </div>
+
+                                <div className="w-32 flex-shrink-0 px-4 py-3 flex items-center border-r border-stone-100 bg-white/50 sticky left-0 z-10">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[mName] || '#ccc' }} />
+                                    <span className="text-[11px] font-bold text-stone-600 truncate">{mName}</span>
+                                  </div>
+                                </div>
                                 
+                                {/* 移動が重なった場合はmemberLanesの数だけ高さを出す */}
                                 <div 
                                   className="flex-grow relative" 
                                   style={{ height: `${Math.max(memberLanes.length * 44 + 12, 56)}px` }}
@@ -175,17 +195,16 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                                       return (
                                         <div
                                           key={`${lIdx}-${i}`}
-                                          className="..." // 既存スタイル
+                                          className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
                                           style={{ 
                                             left: `${start}%`, 
-                                            width: `calc(${barWidth}% - 1px)`, 
-                                            top: `${lIdx * 44 + 6}px`, // 段数(lIdx)に応じて位置を変える
+                                            width: `${barWidth}%`, 
+                                            top: `${lIdx * 44 + 6}px`,
                                             backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
                                           }}
-                                          // 単体タップでも共通の配列形式でセットする
-                                          onClick={() => setSelectedItems([item])} 
+                                          onClick={() => setSelectedItem(item)}
                                         >
-                                          {barWidth > 1.5 && <span className="truncate">{mName}</span>}
+                                          {barWidth > 3 && <span className="truncate">{mName}</span>}
                                         </div>
                                       );
                                     })
@@ -202,16 +221,21 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
               }
 
               // 姉妹軸（viewMode === "member"）のレンダリング部分
-              // ★修正：姉妹軸では getLanes を使わず、常に1つの配列（1段）として定義する
-              const displayLanes = [items]; 
-
               return (
-                <div key={key} className="...">
+                <div key={key} className="flex border-b border-stone-100 items-stretch hover:bg-stone-50/20 transition-colors relative">
+                  {/* 背景の縦線（追加：色を濃く） */}
                   <TimeGrid />
-                  <div className="..."> {/* 名前ラベル */} </div>
+
+                  <div className="w-32 flex-shrink-0 px-4 py-6 flex items-center border-r border-stone-200 sticky left-0 z-10 bg-white">
+                    <div className="text-sm font-bold text-stone-700 flex items-center gap-2">
+                      <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[key] || '#ccc' }} />
+                      <span className="truncate">{key}</span>
+                    </div>
+                  </div>
                   
-                  <div className="flex-grow relative min-h-[80px]" style={{ height: '80px' }}>
-                    {displayLanes.map((lane, lIdx) => 
+                  {/* getLanesを使用して重なりを縦に積む */}
+                  <div className="flex-grow relative min-h-[80px]" style={{ height: `${Math.max(lanes.length * 48 + 16, 80)}px` }}>
+                    {lanes.map((lane, lIdx) => 
                       lane.map((item, i) => {
                         const start = getPosition(item.開始時間, item.シーズン);
                         const end = getPosition(item.終了時間, item.シーズン);
@@ -219,26 +243,15 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                         return (
                           <div
                             key={`${lIdx}-${i}`}
-                            className="..." // 既存スタイル
+                            className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
                             style={{
                               left: `${start}%`,
-                              width: `calc(${barWidth}% - 1px)`,
-                              top: `12px`, // 常に1段目に固定
+                              width: `${barWidth}%`,
+                              top: `${lIdx * 48 + 12}px`,
                               backgroundColor: getLocationColor(item),
-                              color: '#1c1917',
-                              opacity: 0.8 // 重なりを視覚化
+                              color: '#1c1917'
                             }}
-                            onClick={() => {
-                              // クリックした位置と視覚的に重なる全アイテムを抽出
-                              const overlaps = items.filter(other => {
-                                const oStart = getPosition(other.開始時間, other.シーズン);
-                                const oEnd = getPosition(other.終了時間, other.シーズン);
-                                const oVisualEnd = Math.max(oEnd, oStart + 1.2);
-                                const thisVisualEnd = Math.max(end, start + 1.2);
-                                return start < oVisualEnd && thisVisualEnd > oStart;
-                              });
-                              setSelectedItems(overlaps);
-                            }}
+                            onClick={() => setSelectedItem(item)}
                           >
                             <span className="truncate font-bold">{item.場所}</span>
                           </div>
@@ -254,39 +267,27 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
       </div>
 
       {/* 詳細カード：スマホ対応 */}
-      {selectedItems && (
-        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-4" onClick={() => setSelectedItems(null)}>
-          <div className="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300 max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+      {selectedItem && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-4" onClick={() => setSelectedItem(null)}>
+          <div className="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300" onClick={e => e.stopPropagation()}>
             <div className="p-8">
               <div className="flex justify-between items-start mb-6">
-                <h2 className="text-3xl font-bold text-stone-800 tracking-tight">
-                  {selectedItems[0].暦家}
-                </h2>
-                <button onClick={() => setSelectedItems(null)} className="p-2 bg-stone-50 rounded-full">
-                  <X className="w-5 h-5 text-stone-400" />
-                </button>
+                <h2 className="text-3xl font-bold text-stone-800 tracking-tight">{selectedItem.暦家}</h2>
+                <button onClick={() => setSelectedItem(null)} className="p-2 bg-stone-50 rounded-full"><X className="w-5 h-5 text-stone-400" /></button>
               </div>
-
-              {/* 取得したアイテムの数だけループ表示 */}
-              <div className="space-y-8">
-                {selectedItems.map((item, idx) => (
-                  <div key={idx} className={`${idx !== 0 ? 'border-t border-stone-100 pt-8' : ''}`}>
-                    <div className="space-y-4 text-stone-700">
-                      <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
-                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#b28c6e]"><MapPin className="w-5 h-5" /></div>
-                        <div><p className="text-[10px] text-stone-400 font-bold uppercase">Location</p><p className="font-bold">{item.場所}</p></div>
-                      </div>
-                      <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
-                        <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-stone-400 text-lg">🕒</div>
-                        <div><p className="text-[10px] text-stone-400 font-bold uppercase">Time</p><p className="font-bold font-mono">{item.開始時間} 〜 {item.終了時間}</p></div>
-                      </div>
-                      <a href={item.URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-[#b28c6e] text-white rounded-2xl font-bold text-xs shadow-lg shadow-[#b28c6e]/20">
-                        視聴ページへ移動 <ExternalLink className="w-4 h-4" />
-                      </a>
-                    </div>
-                  </div>
-                ))}
+              <div className="space-y-6 mb-8 text-stone-700">
+                <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
+                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#b28c6e]"><MapPin /></div>
+                  <div><p className="text-xs text-stone-400 font-bold">場所</p><p className="font-bold">{selectedItem.場所}</p></div>
+                </div>
+                <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
+                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-stone-400 text-xl">🕒</div>
+                  <div><p className="text-xs text-stone-400 font-bold">時間</p><p className="font-bold font-mono text-lg">{selectedItem.開始時間} 〜 {selectedItem.終了時間}</p></div>
+                </div>
               </div>
+              <a href={selectedItem.URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-5 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30">
+                視聴ページへ移動 <ExternalLink className="w-4 h-4" />
+              </a>
             </div>
           </div>
         </div>
