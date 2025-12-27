@@ -20,10 +20,10 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
   // 重複を判定してセットする関数
   const handleItemClick = (targetItem: ArchiveData, scopeItems: ArchiveData[]) => {
     // タップしたアイテムの時間と1分でも重なっているものを抽出
-    const overlaps = scopeItems.filter(item => 
-      item.開始時間 < targetItem.終了時間 && item.終了時間 > targetItem.開始時間
+    const clusters = scopeItems.filter(item => 
+      item.開始時間 <= targetItem.終了時間 && item.終了時間 >= targetItem.開始時間
     );
-    setSelectedItems(overlaps);
+    setSelectedItems(clusters);
   };
 
   const toggleRow = (key: string) => {
@@ -111,7 +111,6 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
               if (items.length === 0) return null;
               const isExpanded = viewMode === "member" || expandedRows.has(key);
-              const lanes = getLanes(items);
 
               // --- 場所軸のレンダリング ---
               if (viewMode === "location") {
@@ -180,24 +179,30 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       <span className="truncate">{key}</span>
                     </div>
                   </div>
-                  <div className="flex-grow relative min-h-[80px]" style={{ height: `${Math.max(lanes.length * 48 + 16, 80)}px` }}>
-                    {lanes.map((lane, lIdx) => 
-                      lane.map((item, i) => {
-                        const start = getPosition(item.開始時間, item.シーズン);
-                        const end = getPosition(item.終了時間, item.シーズン);
-                        return (
-                          <div
-                            key={`${lIdx}-${i}`}
-                            className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
-                            style={{ left: `${start}%`, width: `${Math.max(end - start, 1.2)}%`, top: `${lIdx * 48 + 12}px`, backgroundColor: getLocationColor(item), color: '#1c1917' }}
-                            // 修正：この行（メンバー）の全アイテムから重複を抽出
-                            onClick={() => handleItemClick(item, items)}
-                          >
-                            <span className="truncate">{item.場所}</span>
-                          </div>
-                        );
-                      })
-                    )}
+                  
+                  {/* 高さ固定（64px）、lanesを使わず直接itemsを表示 */}
+                  <div className="flex-grow relative h-16">
+                    {items.map((item, i) => {
+                      const start = getPosition(item.開始時間, item.シーズン);
+                      const end = getPosition(item.終了時間, item.シーズン);
+                      return (
+                        <div
+                          key={i}
+                          className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
+                          style={{
+                            left: `${start}%`,
+                            width: `${Math.max(end - start, 1.2)}%`,
+                            top: `12px`, // 常に1段目に配置
+                            backgroundColor: getLocationColor(item),
+                            opacity: 0.85, // 重なりが見えるよう少し透過
+                            color: '#1c1917'
+                          }}
+                          onClick={() => handleItemClick(item, items)}
+                        >
+                          <span className="truncate">{item.場所}</span>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
