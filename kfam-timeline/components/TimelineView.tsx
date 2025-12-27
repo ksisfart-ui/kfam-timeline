@@ -219,7 +219,6 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
       {/* 詳細カード：スマホ対応 */}
       {selectedItem && (
-        {/* selectedItem が配列（クラスター）だった場合も考慮した表示 */}
         <div className="p-8">
           <div className="flex justify-between items-start mb-6">
             <h2 className="text-2xl font-bold text-stone-800">
