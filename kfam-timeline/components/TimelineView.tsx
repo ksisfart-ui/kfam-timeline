@@ -21,6 +21,15 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
     setExpandedRows(next);
   };
 
+  // 目盛り線（グリッド）を表示する共通パーツ
+  const TimeGrid = () => (
+    <div className="absolute inset-0 flex pointer-events-none z-0">
+      {timeLabels.map((_, i) => (
+        <div key={i} className="flex-grow border-l border-stone-300 first:border-l-0" />
+      ))}
+    </div>
+  );
+
   const getLanes = (items: ArchiveData[]) => {
     const sorted = [...items].sort((a, b) => a.開始時間.localeCompare(b.開始時間));
     const lanes: ArchiveData[][] = [];
@@ -134,15 +143,16 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
                       {/* 展開時：メンバーごとに姉妹軸と同じデザインで並べる */}
                       {isExpanded && (
-                        <div className="border-t border-stone-50 bg-stone-50/20">
+                        <div className="border-t border-stone-50 bg-stone-50/20 relative">
                           {membersAtLocation.map((mName) => {
                             const memberItems = items.filter(d => d.暦家 === mName);
-                            // メンバーごとの重なり（レーン）を計算
                             const memberLanes = getLanes(memberItems);
                             
                             return (
-                              <div key={mName} className="flex border-b border-stone-50 last:border-b-0 items-stretch">
-                                {/* 左側ラベル：姉妹軸と同じデザイン */}
+                              <div key={mName} className="flex border-b border-stone-50 last:border-b-0 items-stretch relative">
+                                {/* 場所軸の展開内にも縦線を追加 */}
+                                <TimeGrid />
+
                                 <div className="w-32 flex-shrink-0 px-4 py-3 flex items-center border-r border-stone-100 bg-white/50 sticky left-0 z-10">
                                   <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[mName] || '#ccc' }} />
@@ -150,31 +160,29 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                                   </div>
                                 </div>
                                 
-                                {/* 右側タイムライン：縦幅を見切れないよう動的に調整 */}
+                                {/* 移動が重なった場合はmemberLanesの数だけ高さを出す */}
                                 <div 
                                   className="flex-grow relative" 
-                                  style={{ height: `${Math.max(memberLanes.length * 40 + 16, 56)}px` }}
+                                  style={{ height: `${Math.max(memberLanes.length * 44 + 12, 56)}px` }}
                                 >
                                   {memberLanes.map((lane, lIdx) => 
                                     lane.map((item, i) => {
                                       const start = getPosition(item.開始時間, item.シーズン);
                                       const end = getPosition(item.終了時間, item.シーズン);
-                                      // 1分間隔などの短い滞在対策：最低幅(1.2%)を確保
                                       const barWidth = Math.max(end - start, 1.2);
 
                                       return (
                                         <div
                                           key={`${lIdx}-${i}`}
-                                          className="absolute h-8 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
+                                          className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
                                           style={{ 
                                             left: `${start}%`, 
                                             width: `${barWidth}%`, 
-                                            top: `${lIdx * 40 + 8}px`,
+                                            top: `${lIdx * 44 + 6}px`,
                                             backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
                                           }}
                                           onClick={() => setSelectedItem(item)}
                                         >
-                                          {/* 幅が狭いときは文字を隠す */}
                                           {barWidth > 3 && <span className="truncate">{mName}</span>}
                                         </div>
                                       );
@@ -191,36 +199,40 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                 );
               }
 
-              // --- 姉妹軸（従来通りの横長行形式） ---
+              // 姉妹軸（viewMode === "member"）のレンダリング部分
               return (
-                <div key={key} className="flex border-b border-stone-100 items-stretch hover:bg-stone-50/20 transition-colors">
+                <div key={key} className="flex border-b border-stone-100 items-stretch hover:bg-stone-50/20 transition-colors relative">
+                  {/* 背景の縦線（追加：色を濃く） */}
+                  <TimeGrid />
+
                   <div className="w-32 flex-shrink-0 px-4 py-6 flex items-center border-r border-stone-200 sticky left-0 z-10 bg-white">
                     <div className="text-sm font-bold text-stone-700 flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full" style={{ backgroundColor: MEMBER_COLORS[key] || '#ccc' }} />
+                      <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[key] || '#ccc' }} />
                       <span className="truncate">{key}</span>
                     </div>
                   </div>
-                  <div className="flex-grow relative min-h-[80px]" style={{ height: `${lanes.length * 52 + 16}px` }}>
-                    {lanes.map((lane, laneIdx) =>
+                  
+                  {/* getLanesを使用して重なりを縦に積む */}
+                  <div className="flex-grow relative min-h-[80px]" style={{ height: `${Math.max(lanes.length * 48 + 16, 80)}px` }}>
+                    {lanes.map((lane, lIdx) => 
                       lane.map((item, i) => {
                         const start = getPosition(item.開始時間, item.シーズン);
                         const end = getPosition(item.終了時間, item.シーズン);
-                        const isShort = end - start < 3; // 滞在が短い場合
-
+                        const barWidth = Math.max(end - start, 1.2);
                         return (
                           <div
-                            key={`${laneIdx}-${i}`}
-                            className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer bg-stone-50 transition-all hover:scale-[1.02]"
+                            key={`${lIdx}-${i}`}
+                            className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
                             style={{
                               left: `${start}%`,
-                              width: `${Math.max(end - start, 1)}%`,
-                              top: `${laneIdx * 52 + 12}px`,
+                              width: `${barWidth}%`,
+                              top: `${lIdx * 48 + 12}px`,
                               backgroundColor: getLocationColor(item),
                               color: '#1c1917'
                             }}
                             onClick={() => setSelectedItem(item)}
                           >
-                            <span className="truncate font-bold">{item.場所}</span>
+                            <span className="truncate">{item.場所}</span>
                           </div>
                         );
                       })
