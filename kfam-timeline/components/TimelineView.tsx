@@ -3,17 +3,28 @@ import React, { useState } from 'react';
 import { ArchiveData } from "@/types";
 import { getPosition, getTimeLabels } from "@/lib/timeUtils";
 import { getLocationColor, MEMBER_COLORS, LOCATION_READING_MAP } from "@/lib/utils";
-import { Search, ZoomIn, ZoomOut, ChevronDown, ChevronRight, MapPin, X, ExternalLink } from "lucide-react";
+import { Search, ZoomIn, ZoomOut, ChevronDown, ChevronRight, MapPin, X, ExternalLink, Layers } from "lucide-react";
 
 export default function TimelineView({ data }: { data: ArchiveData[] }) {
   const [zoom, setZoom] = useState(1);
   const [query, setQuery] = useState("");
   const [viewMode, setViewMode] = useState<"member" | "location">("member");
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
-  const [selectedItem, setSelectedItem] = useState<ArchiveData | null>(null);
+  
+  // 修正：単体(ArchiveData | null)から配列(ArchiveData[] | null)に変更
+  const [selectedItems, setSelectedItems] = useState<ArchiveData[] | null>(null);
 
   const timeLabels = getTimeLabels(data[0]?.シーズン || "Season2");
   const groupKeys = Array.from(new Set(data.map(d => viewMode === "member" ? d.暦家 : d.場所)));
+
+  // 重複を判定してセットする関数
+  const handleItemClick = (targetItem: ArchiveData, scopeItems: ArchiveData[]) => {
+    // タップしたアイテムの時間と1分でも重なっているものを抽出
+    const overlaps = scopeItems.filter(item => 
+      item.開始時間 < targetItem.終了時間 && item.終了時間 > targetItem.開始時間
+    );
+    setSelectedItems(overlaps);
+  };
 
   const toggleRow = (key: string) => {
     const next = new Set(expandedRows);
@@ -21,7 +32,6 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
     setExpandedRows(next);
   };
 
-  // 目盛り線（グリッド）を表示する共通パーツ
   const TimeGrid = () => (
     <div className="absolute inset-0 flex pointer-events-none z-0">
       {timeLabels.map((_, i) => (
@@ -49,58 +59,40 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
   return (
     <div className="space-y-4 pb-24">
-    {/* 操作パネル */}
-    <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-200 flex flex-col gap-4 sticky top-4 z-40">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        {/* 検索バー：文字色を明示的に指定 */}
-        <div className="relative flex-grow max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 w-4 h-4" />
-          <input
-            type="text"
-            placeholder="名前・場所・店名で検索"
-            className="w-full pl-10 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm text-stone-800 placeholder-stone-400 focus:ring-2 focus:ring-[#b28c6e]/30 outline-none"
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="flex items-center gap-2">
-          {/* 軸切り替え */}
-          <div className="flex bg-stone-100 p-1 rounded-xl">
-            <button onClick={() => setViewMode("member")} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === "member" ? "bg-white text-stone-800 shadow-sm" : "text-stone-400 hover:text-stone-600"}`}>
-              姉妹軸
-            </button>
-            <button onClick={() => setViewMode("location")} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === "location" ? "bg-white text-stone-800 shadow-sm" : "text-stone-400 hover:text-stone-600"}`}>
-              場所軸
-            </button>
+      {/* 操作パネル（既存通り） */}
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-stone-200 flex flex-col gap-4 sticky top-4 z-40">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="relative flex-grow max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="名前・場所・店名で検索"
+              className="w-full pl-10 pr-4 py-3 bg-stone-50 border border-stone-100 rounded-xl text-sm text-stone-800 placeholder-stone-400 focus:ring-2 focus:ring-[#b28c6e]/30 outline-none"
+              onChange={(e) => setQuery(e.target.value)}
+            />
           </div>
-
-          {/* ズーム機能：スマホ（md未満）では非表示に設定 */}
-          <div className="hidden md:flex items-center bg-stone-100 p-1 rounded-xl border border-stone-200">
-            <button onClick={() => setZoom(Math.max(1, zoom - 0.5))} className="p-2 hover:bg-white rounded-lg transition-all">
-              <ZoomOut className="w-4 h-4 text-stone-600" />
-            </button>
-            <span className="text-[10px] font-bold w-10 text-center text-stone-600">
-              {Math.round(zoom * 100)}%
-            </span>
-            <button onClick={() => setZoom(Math.min(3, zoom + 0.5))} className="p-2 hover:bg-white rounded-lg transition-all">
-              <ZoomIn className="w-4 h-4 text-stone-600" />
-            </button>
+          <div className="flex items-center gap-2">
+            <div className="flex bg-stone-100 p-1 rounded-xl">
+              <button onClick={() => setViewMode("member")} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === "member" ? "bg-white text-stone-800 shadow-sm" : "text-stone-400 hover:text-stone-600"}`}>姉妹軸</button>
+              <button onClick={() => setViewMode("location")} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === "location" ? "bg-white text-stone-800 shadow-sm" : "text-stone-400 hover:text-stone-600"}`}>場所軸</button>
+            </div>
+            <div className="hidden md:flex items-center bg-stone-100 p-1 rounded-xl border border-stone-200">
+              <button onClick={() => setZoom(Math.max(1, zoom - 0.5))} className="p-2 hover:bg-white rounded-lg transition-all"><ZoomOut className="w-4 h-4 text-stone-600" /></button>
+              <span className="text-[10px] font-bold w-10 text-center text-stone-600">{Math.round(zoom * 100)}%</span>
+              <button onClick={() => setZoom(Math.min(3, zoom + 0.5))} className="p-2 hover:bg-white rounded-lg transition-all"><ZoomIn className="w-4 h-4 text-stone-600" /></button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-      {/* タイムライン本体 */}
       <div className="bg-white rounded-3xl shadow-xl border border-stone-200 overflow-hidden">
         <div className="overflow-x-auto overflow-y-visible">
           <div style={{ width: `${zoom * 100}%`, minWidth: '1000px' }} className="relative transition-all duration-300">
-            {/* 背景の縦目盛り線（ここを追加） */}
             <div className="absolute inset-0 flex pointer-events-none z-0">
               {timeLabels.map((_, i) => (
                 <div key={i} className="flex-grow border-l border-stone-200/40 first:border-l-0" />
               ))}
             </div>
-            {/* 時間軸 */}
             <div className="flex border-b border-stone-100 bg-stone-50/50 sticky top-0 z-30">
               <div className="w-32 flex-shrink-0 border-r border-stone-200 p-4 text-[10px] font-bold text-stone-400 sticky left-0 bg-stone-50 z-20">名前/場所</div>
               <div className="flex-grow flex">
@@ -121,18 +113,13 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
               const isExpanded = viewMode === "member" || expandedRows.has(key);
               const lanes = getLanes(items);
 
-              // --- 場所軸（アコーディオン形式） ---
+              // --- 場所軸のレンダリング ---
               if (viewMode === "location") {
                 const membersAtLocation = Array.from(new Set(items.map(d => d.暦家)));
-  
                 return (
                   <div key={key} className="mb-3 px-4 relative z-10">
                     <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
-                      {/* アコーディオンヘッダー（既存イメージ維持） */}
-                      <button 
-                        onClick={() => toggleRow(key)}
-                        className="w-full flex items-center justify-between p-5 hover:bg-stone-50 transition-colors"
-                      >
+                      <button onClick={() => toggleRow(key)} className="w-full flex items-center justify-between p-5 hover:bg-stone-50 transition-colors">
                         <div className="flex items-center gap-4">
                           <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#b28c6e' }} />
                           <span className="text-base font-bold text-stone-700">{key}</span>
@@ -140,50 +127,34 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                         </div>
                         {isExpanded ? <ChevronDown className="w-5 h-5 text-stone-300" /> : <ChevronRight className="w-5 h-5 text-stone-300" />}
                       </button>
-
-                      {/* 展開時：メンバーごとに姉妹軸と同じデザインで並べる */}
                       {isExpanded && (
                         <div className="border-t border-stone-50 bg-stone-50/20 relative">
                           {membersAtLocation.map((mName) => {
                             const memberItems = items.filter(d => d.暦家 === mName);
                             const memberLanes = getLanes(memberItems);
-                            
                             return (
                               <div key={mName} className="flex border-b border-stone-50 last:border-b-0 items-stretch relative">
-                                {/* 場所軸の展開内にも縦線を追加 */}
                                 <TimeGrid />
-
                                 <div className="w-32 flex-shrink-0 px-4 py-3 flex items-center border-r border-stone-100 bg-white/50 sticky left-0 z-10">
                                   <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[mName] || '#ccc' }} />
                                     <span className="text-[11px] font-bold text-stone-600 truncate">{mName}</span>
                                   </div>
                                 </div>
-                                
-                                {/* 移動が重なった場合はmemberLanesの数だけ高さを出す */}
-                                <div 
-                                  className="flex-grow relative" 
-                                  style={{ height: `${Math.max(memberLanes.length * 44 + 12, 56)}px` }}
-                                >
+                                <div className="flex-grow relative" style={{ height: `${Math.max(memberLanes.length * 44 + 12, 56)}px` }}>
                                   {memberLanes.map((lane, lIdx) => 
                                     lane.map((item, i) => {
                                       const start = getPosition(item.開始時間, item.シーズン);
                                       const end = getPosition(item.終了時間, item.シーズン);
-                                      const barWidth = Math.max(end - start, 1.2);
-
                                       return (
                                         <div
                                           key={`${lIdx}-${i}`}
                                           className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
-                                          style={{ 
-                                            left: `${start}%`, 
-                                            width: `${barWidth}%`, 
-                                            top: `${lIdx * 44 + 6}px`,
-                                            backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
-                                          }}
-                                          onClick={() => setSelectedItem(item)}
+                                          style={{ left: `${start}%`, width: `${Math.max(end - start, 1.2)}%`, top: `${lIdx * 44 + 6}px`, backgroundColor: MEMBER_COLORS[item.暦家] || '#666' }}
+                                          // 修正：同じメンバーの重複アイテムを抽出
+                                          onClick={() => handleItemClick(item, memberItems)}
                                         >
-                                          {barWidth > 3 && <span className="truncate">{mName}</span>}
+                                          {Math.max(end - start, 1.2) > 3 && <span className="truncate">{mName}</span>}
                                         </div>
                                       );
                                     })
@@ -199,38 +170,28 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                 );
               }
 
-              // 姉妹軸（viewMode === "member"）のレンダリング部分
+              // --- 姉妹軸のレンダリング ---
               return (
                 <div key={key} className="flex border-b border-stone-100 items-stretch hover:bg-stone-50/20 transition-colors relative">
-                  {/* 背景の縦線（追加：色を濃く） */}
                   <TimeGrid />
-
                   <div className="w-32 flex-shrink-0 px-4 py-6 flex items-center border-r border-stone-200 sticky left-0 z-10 bg-white">
                     <div className="text-sm font-bold text-stone-700 flex items-center gap-2">
                       <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[key] || '#ccc' }} />
                       <span className="truncate">{key}</span>
                     </div>
                   </div>
-                  
-                  {/* getLanesを使用して重なりを縦に積む */}
                   <div className="flex-grow relative min-h-[80px]" style={{ height: `${Math.max(lanes.length * 48 + 16, 80)}px` }}>
                     {lanes.map((lane, lIdx) => 
                       lane.map((item, i) => {
                         const start = getPosition(item.開始時間, item.シーズン);
                         const end = getPosition(item.終了時間, item.シーズン);
-                        const barWidth = Math.max(end - start, 1.2);
                         return (
                           <div
                             key={`${lIdx}-${i}`}
                             className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
-                            style={{
-                              left: `${start}%`,
-                              width: `${barWidth}%`,
-                              top: `${lIdx * 48 + 12}px`,
-                              backgroundColor: getLocationColor(item),
-                              color: '#1c1917'
-                            }}
-                            onClick={() => setSelectedItem(item)}
+                            style={{ left: `${start}%`, width: `${Math.max(end - start, 1.2)}%`, top: `${lIdx * 48 + 12}px`, backgroundColor: getLocationColor(item), color: '#1c1917' }}
+                            // 修正：この行（メンバー）の全アイテムから重複を抽出
+                            onClick={() => handleItemClick(item, items)}
                           >
                             <span className="truncate">{item.場所}</span>
                           </div>
@@ -245,28 +206,53 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
         </div>
       </div>
 
-      {/* 詳細カード：スマホ対応 */}
-      {selectedItem && (
-        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-4" onClick={() => setSelectedItem(null)}>
-          <div className="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300" onClick={e => e.stopPropagation()}>
-            <div className="p-8">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-3xl font-bold text-stone-800 tracking-tight">{selectedItem.暦家}</h2>
-                <button onClick={() => setSelectedItem(null)} className="p-2 bg-stone-50 rounded-full"><X className="w-5 h-5 text-stone-400" /></button>
+      {/* 詳細カード：複数対応版 */}
+      {selectedItems && selectedItems.length > 0 && (
+        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-4" onClick={() => setSelectedItems(null)}>
+          <div className="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300 max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            
+            {/* モーダルヘッダー */}
+            <div className="p-6 pb-2 flex justify-between items-center border-b border-stone-50">
+              <div className="flex items-center gap-2">
+                <Layers className="w-4 h-4 text-stone-400" />
+                <span className="text-xs font-bold text-stone-500 uppercase tracking-widest">{selectedItems.length}件の履歴</span>
               </div>
-              <div className="space-y-6 mb-8 text-stone-700">
-                <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
-                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#b28c6e]"><MapPin /></div>
-                  <div><p className="text-xs text-stone-400 font-bold">場所</p><p className="font-bold">{selectedItem.場所}</p></div>
+              <button onClick={() => setSelectedItems(null)} className="p-2 bg-stone-50 rounded-full"><X className="w-5 h-5 text-stone-400" /></button>
+            </div>
+
+            {/* リストエリア（スクロール可能） */}
+            <div className="overflow-y-auto p-6 pt-2 space-y-10 pb-10">
+              {selectedItems.map((item, idx) => (
+                <div key={idx} className="relative">
+                  {/* 区切り線（2番目以降） */}
+                  {idx !== 0 && <div className="absolute -top-5 left-0 right-0 border-t border-stone-100" />}
+                  
+                  <div className="mb-6">
+                    <h2 className="text-3xl font-bold text-stone-800 tracking-tight">{item.暦家}</h2>
+                  </div>
+                  
+                  <div className="space-y-4 mb-6 text-stone-700">
+                    <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
+                      <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#b28c6e] flex-shrink-0"><MapPin className="w-5 h-5" /></div>
+                      <div>
+                        <p className="text-[10px] text-stone-400 font-bold uppercase">場所</p>
+                        <p className="font-bold">{item.場所}</p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
+                      <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-stone-400 text-lg flex-shrink-0">🕒</div>
+                      <div>
+                        <p className="text-[10px] text-stone-400 font-bold uppercase">時間</p>
+                        <p className="font-bold font-mono text-lg">{item.開始時間} 〜 {item.終了時間}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <a href={item.URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30 transition-transform active:scale-95">
+                    視聴ページへ移動 <ExternalLink className="w-4 h-4" />
+                  </a>
                 </div>
-                <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
-                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-stone-400 text-xl">🕒</div>
-                  <div><p className="text-xs text-stone-400 font-bold">時間</p><p className="font-bold font-mono text-lg">{selectedItem.開始時間} 〜 {selectedItem.終了時間}</p></div>
-                </div>
-              </div>
-              <a href={selectedItem.URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-5 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30">
-                視聴ページへ移動 <ExternalLink className="w-4 h-4" />
-              </a>
+              ))}
             </div>
           </div>
         </div>
