@@ -34,34 +34,35 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
     const sorted = [...items].sort((a, b) => a.開始時間.localeCompare(b.開始時間));
     const lanes: ArchiveData[][] = [];
     
-    // 表示上の最小幅（%単位）。UI側の Math.max(..., 1.2) と合わせる
-    const MIN_WIDTH = 1.2; 
+    // ★ここが調整の鍵です
+    // 実際の表示幅（1.2%）よりも小さい値を判定に使います。
+    // 0.1% は 24時間表示でおよそ 1.4分 相当です。
+    // 1分間隔の予定（0:30, 0:31, 0:32...）をジグザグにしたい場合は 0.1〜0.15 程度が理想です。
+    const COLLISION_THRESHOLD = 0.12; 
 
     sorted.forEach(item => {
       let placed = false;
-      
-      // このアイテムの表示上の開始位置と終了位置を計算
       const startPos = getPosition(item.開始時間, item.シーズン);
-      const actualEndPos = getPosition(item.終了時間, item.シーズン);
-      // UIと同じく、最低でも MIN_WIDTH 分の幅を確保した「計算上の終了位置」
-      const visualEndPos = Math.max(actualEndPos, startPos + MIN_WIDTH);
 
+      // 既存の段を順番にチェックし、最初に入れる段を見つける
       for (let i = 0; i < lanes.length; i++) {
         const lastItem = lanes[i][lanes[i].length - 1];
         const lastStartPos = getPosition(lastItem.開始時間, lastItem.シーズン);
         const lastActualEndPos = getPosition(lastItem.終了時間, lastItem.シーズン);
-        // 前のアイテムの「表示上の終了位置」
-        const lastVisualEndPos = Math.max(lastActualEndPos, lastStartPos + MIN_WIDTH);
+        
+        // その段の最後のアイテムが「判定上」いつ終わるか
+        // 「実際の終了時間」か「開始＋最小閾値」の遅い方を採用します
+        const lastBusyUntil = Math.max(lastActualEndPos, lastStartPos + COLLISION_THRESHOLD);
 
-        // 前のアイテムの「表示上の終わり」よりも、今のアイテムの「開始」が後ろなら同じ段に入れる
-        // 少し（0.1%ほど）余裕を持たせるとより綺麗に見えます
-        if (startPos >= lastVisualEndPos + 0.1) {
+        // 前のアイテムの判定終了時間を過ぎていれば、その段を再利用する
+        if (startPos >= lastBusyUntil) {
           lanes[i].push(item);
           placed = true;
           break;
         }
       }
       
+      // どの段にも入らなければ新しい段を作る
       if (!placed) lanes.push([item]);
     });
     
@@ -246,14 +247,18 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                             className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
                             style={{
                               left: `${start}%`,
-                              width: `${barWidth}%`,
+                              // calcを使って、右側に1px〜2pxの隙間を強制的に作る
+                              // これにより、同じ段で隣り合っても「別の予定」だと一目でわかります
+                              width: `calc(${barWidth}% - 1px)`, 
                               top: `${lIdx * 48 + 12}px`,
                               backgroundColor: getLocationColor(item),
-                              color: '#1c1917'
+                              color: '#1c1917',
+                              // ホバーした時に重なり順を一番上にする
+                              zIndex: 20
                             }}
                             onClick={() => setSelectedItem(item)}
                           >
-                            <span className="truncate">{item.場所}</span>
+                            <span className="truncate font-bold">{item.場所}</span>
                           </div>
                         );
                       })
