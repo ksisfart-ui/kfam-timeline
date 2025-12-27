@@ -40,3 +40,29 @@ export function groupDatesByMonth(dates: string[]) {
     return acc;
   }, {} as Record<string, string[]>);
 }
+
+// 密集しているアイテムをグループ化するロジック（簡易版）
+export function clusterItems(items: ArchiveData[]) {
+  const clusters: (ArchiveData | ArchiveData[])[] = [];
+  let currentCluster: ArchiveData[] = [];
+
+  const sorted = [...items].sort((a, b) => a.開始時間.localeCompare(b.開始時間));
+
+  sorted.forEach((item, idx) => {
+    const next = sorted[idx + 1];
+    // 滞在時間が10分未満、かつ次の移動まで5分以内なら「密集」とみなす
+    const isDense = next && (getPosition(next.開始時間, item.シーズン) - getPosition(item.終了時間, item.シーズン) < 2);
+
+    if (isDense || currentCluster.length > 0) {
+      currentCluster.push(item);
+      // 次が密集していない、あるいは最後のアイテムならクラスター確定
+      if (!isDense) {
+        clusters.push([...currentCluster]);
+        currentCluster = [];
+      }
+    } else {
+      clusters.push(item);
+    }
+  });
+  return clusters;
+}

@@ -129,28 +129,44 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       {/* 展開時のタイムラインエリア */}
                       {isExpanded && (
                         <div className="border-t border-stone-50 overflow-x-auto bg-stone-50/30">
-                          <div style={{ width: `${zoom * 100}%`, minWidth: '1000px' }} className="relative p-4 h-[120px]">
-                            {lanes.map((lane, lIdx) =>
-                              lane.map((item, i) => {
-                                const start = getPosition(item.開始時間, item.シーズン);
-                                const end = getPosition(item.終了時間, item.シーズン);
-                                return (
-                                  <div
-                                    key={`${lIdx}-${i}`}
-                                    className="absolute h-10 rounded-lg shadow-sm border border-black/5 cursor-pointer flex items-center px-3 text-[10px] font-bold text-white transition-all hover:scale-[1.02]"
-                                    style={{
-                                      left: `${start}%`,
-                                      width: `${Math.max(end - start, 1)}%`,
-                                      top: `${lIdx * 52 + 10}px`,
-                                      backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
-                                    }}
-                                    onClick={() => setSelectedItem(item)}
-                                  >
-                                    <span className="truncate">{item.暦家}</span>
+                          <div style={{ width: `${zoom * 100}%`, minWidth: '1000px' }} className="relative p-2">
+                            {/* その場所にいたメンバーごとにグループ化して表示 */}
+                            {Array.from(new Set(items.map(d => d.暦家))).map((member) => {
+                              const memberItems = items.filter(d => d.暦家 === member);
+                              const memberLanes = getLanes(memberItems); // 同一メンバーの重なり対応
+
+                              return (
+                                <div key={member} className="flex items-center mb-1 last:mb-0 group/member-row">
+                                  {/* 左側：メンバー名ラベル（15%程度の幅で固定すると見やすい） */}
+                                  <div className="w-24 shrink-0 px-2 py-1 sticky left-0 z-10 bg-stone-100/80 backdrop-blur rounded text-[10px] font-bold text-stone-500 border border-stone-200 shadow-sm">
+                                    {member}
                                   </div>
-                                );
-                              })
-                            )}
+
+                                  {/* 右側：そのメンバーの滞在バー */}
+                                  <div className="flex-grow relative h-10 ml-2">
+                                    {memberItems.map((item, i) => {
+                                      const start = getPosition(item.開始時間, item.シーズン);
+                                      const end = getPosition(item.終了時間, item.シーズン);
+                                      return (
+                                        <div
+                                          key={i}
+                                          className="absolute h-8 top-1 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[10px] font-bold text-white transition-all hover:scale-[1.02]"
+                                          style={{
+                                            left: `${start}%`,
+                                            width: `${Math.max(end - start, 1)}%`,
+                                            backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
+                                          }}
+                                          onClick={() => setSelectedItem(item)}
+                                        >
+                                          {/* バーが狭い場合は場所名（この場合は不要かも）を非表示 */}
+                                          {(end - start) > 5 && <span className="truncate">滞在</span>}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              );
+                            })}
                           </div>
                         </div>
                       )}
@@ -203,27 +219,30 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
       {/* 詳細カード：スマホ対応 */}
       {selectedItem && (
-        <div className="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-[100] flex items-end sm:items-center justify-center p-4" onClick={() => setSelectedItem(null)}>
-          <div className="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl animate-in slide-in-from-bottom duration-300" onClick={e => e.stopPropagation()}>
-            <div className="p-8">
-              <div className="flex justify-between items-start mb-6">
-                <h2 className="text-3xl font-bold text-stone-800 tracking-tight">{selectedItem.暦家}</h2>
-                <button onClick={() => setSelectedItem(null)} className="p-2 bg-stone-50 rounded-full"><X className="w-5 h-5 text-stone-400" /></button>
-              </div>
-              <div className="space-y-6 mb-8 text-stone-700">
-                <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
-                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-[#b28c6e]"><MapPin /></div>
-                  <div><p className="text-xs text-stone-400 font-bold">場所</p><p className="font-bold">{selectedItem.場所}</p></div>
+        {/* selectedItem が配列（クラスター）だった場合も考慮した表示 */}
+        <div className="p-8">
+          <div className="flex justify-between items-start mb-6">
+            <h2 className="text-2xl font-bold text-stone-800">
+              {Array.isArray(selectedItem) ? "移動履歴（密集エリア）" : selectedItem.暦家}
+            </h2>
+            <button onClick={() => setSelectedItem(null)}><X className="text-stone-400" /></button>
+          </div>
+
+          <div className="max-h-[60vh] overflow-y-auto space-y-3 pr-2 custom-scrollbar">
+            {(Array.isArray(selectedItem) ? selectedItem : [selectedItem]).map((item, idx) => (
+              <div key={idx} className="bg-stone-50 p-4 rounded-2xl flex items-center justify-between group/list-item">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-lg bg-white shadow-sm flex items-center justify-center text-[#b28c6e] text-xs">📍</div>
+                  <div>
+                    <p className="text-[10px] text-stone-400 font-bold">{item.開始時間} - {item.終了時間}</p>
+                    <p className="font-bold text-stone-700">{item.場所}</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
-                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center text-stone-400 text-xl">🕒</div>
-                  <div><p className="text-xs text-stone-400 font-bold">時間</p><p className="font-bold font-mono text-lg">{selectedItem.開始時間} 〜 {selectedItem.終了時間}</p></div>
-                </div>
+                <a href={item.URL} target="_blank" className="p-2 bg-[#b28c6e]/10 text-[#b28c6e] rounded-xl opacity-0 group-hover/list-item:opacity-100 transition-all">
+                  <ExternalLink className="w-4 h-4" />
+                </a>
               </div>
-              <a href={selectedItem.URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-5 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30">
-                視聴ページへ移動 <ExternalLink className="w-4 h-4" />
-              </a>
-            </div>
+            ))}
           </div>
         </div>
       )}
