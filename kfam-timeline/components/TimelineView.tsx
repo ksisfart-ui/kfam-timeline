@@ -85,6 +85,12 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
       <div className="bg-white rounded-3xl shadow-xl border border-stone-200 overflow-hidden">
         <div className="overflow-x-auto overflow-y-visible">
           <div style={{ width: `${zoom * 100}%`, minWidth: '1000px' }} className="relative transition-all duration-300">
+            {/* 背景の縦目盛り線（ここを追加） */}
+            <div className="absolute inset-0 flex pointer-events-none z-0">
+              {timeLabels.map((_, i) => (
+                <div key={i} className="flex-grow border-l border-stone-200/40 first:border-l-0" />
+              ))}
+            </div>
             {/* 時間軸 */}
             <div className="flex border-b border-stone-100 bg-stone-50/50 sticky top-0 z-30">
               <div className="w-32 flex-shrink-0 border-r border-stone-200 p-4 text-[10px] font-bold text-stone-400 sticky left-0 bg-stone-50 z-20">名前/場所</div>
@@ -108,50 +114,76 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
               // --- 場所軸（アコーディオン形式） ---
               if (viewMode === "location") {
+                const membersAtLocation = Array.from(new Set(items.map(d => d.暦家)));
+  
                 return (
-                  <div key={key} className="mb-3 px-4">
+                  <div key={key} className="mb-3 px-4 relative z-10">
                     <div className="bg-white rounded-2xl border border-stone-100 shadow-sm overflow-hidden">
-                      {/* アコーディオンヘッダー */}
-                      <button
+                      {/* アコーディオンヘッダー（既存イメージ維持） */}
+                      <button 
                         onClick={() => toggleRow(key)}
                         className="w-full flex items-center justify-between p-5 hover:bg-stone-50 transition-colors"
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-3 h-3 rounded-full shadow-sm" style={{ backgroundColor: '#b28c6e' }} />
                           <span className="text-base font-bold text-stone-700">{key}</span>
+                          <span className="text-xs text-stone-400 font-normal">{membersAtLocation.length}名が滞在</span>
                         </div>
-                        {isExpanded ?
-                          <ChevronDown className="w-5 h-5 text-stone-300" /> :
-                          <ChevronRight className="w-5 h-5 text-stone-300" />
-                        }
+                        {isExpanded ? <ChevronDown className="w-5 h-5 text-stone-300" /> : <ChevronRight className="w-5 h-5 text-stone-300" />}
                       </button>
 
-                      {/* 展開時のタイムラインエリア */}
+                      {/* 展開時：メンバーごとに姉妹軸と同じデザインで並べる */}
                       {isExpanded && (
-                        <div className="border-t border-stone-50 overflow-x-auto bg-stone-50/30">
-                          <div style={{ width: `${zoom * 100}%`, minWidth: '1000px' }} className="relative p-4 h-[120px]">
-                            {lanes.map((lane, lIdx) =>
-                              lane.map((item, i) => {
-                                const start = getPosition(item.開始時間, item.シーズン);
-                                const end = getPosition(item.終了時間, item.シーズン);
-                                return (
-                                  <div
-                                    key={`${lIdx}-${i}`}
-                                    className="absolute h-10 rounded-lg shadow-sm border border-black/5 cursor-pointer flex items-center px-3 text-[10px] font-bold text-white transition-all hover:scale-[1.02]"
-                                    style={{
-                                      left: `${start}%`,
-                                      width: `${Math.max(end - start, 1)}%`,
-                                      top: `${lIdx * 52 + 10}px`,
-                                      backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
-                                    }}
-                                    onClick={() => setSelectedItem(item)}
-                                  >
-                                    <span className="truncate">{item.暦家}</span>
+                        <div className="border-t border-stone-50 bg-stone-50/20">
+                          {membersAtLocation.map((mName) => {
+                            const memberItems = items.filter(d => d.暦家 === mName);
+                            // メンバーごとの重なり（レーン）を計算
+                            const memberLanes = getLanes(memberItems);
+                            
+                            return (
+                              <div key={mName} className="flex border-b border-stone-50 last:border-b-0 items-stretch">
+                                {/* 左側ラベル：姉妹軸と同じデザイン */}
+                                <div className="w-32 flex-shrink-0 px-4 py-3 flex items-center border-r border-stone-100 bg-white/50 sticky left-0 z-10">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[mName] || '#ccc' }} />
+                                    <span className="text-[11px] font-bold text-stone-600 truncate">{mName}</span>
                                   </div>
-                                );
-                              })
-                            )}
-                          </div>
+                                </div>
+                                
+                                {/* 右側タイムライン：縦幅を見切れないよう動的に調整 */}
+                                <div 
+                                  className="flex-grow relative" 
+                                  style={{ height: `${Math.max(memberLanes.length * 40 + 16, 56)}px` }}
+                                >
+                                  {memberLanes.map((lane, lIdx) => 
+                                    lane.map((item, i) => {
+                                      const start = getPosition(item.開始時間, item.シーズン);
+                                      const end = getPosition(item.終了時間, item.シーズン);
+                                      // 1分間隔などの短い滞在対策：最低幅(1.2%)を確保
+                                      const barWidth = Math.max(end - start, 1.2);
+
+                                      return (
+                                        <div
+                                          key={`${lIdx}-${i}`}
+                                          className="absolute h-8 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
+                                          style={{ 
+                                            left: `${start}%`, 
+                                            width: `${barWidth}%`, 
+                                            top: `${lIdx * 40 + 8}px`,
+                                            backgroundColor: MEMBER_COLORS[item.暦家] || '#666'
+                                          }}
+                                          onClick={() => setSelectedItem(item)}
+                                        >
+                                          {/* 幅が狭いときは文字を隠す */}
+                                          {barWidth > 3 && <span className="truncate">{mName}</span>}
+                                        </div>
+                                      );
+                                    })
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
