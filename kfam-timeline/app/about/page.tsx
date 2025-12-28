@@ -2,72 +2,106 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#f8f9fa] p-4 md:p-12 text-stone-700 font-sans">
-      <div className="max-w-4xl mx-auto bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden">
+    <main className="min-h-screen bg-[#fcfaf8] p-6 md:p-12 text-stone-600 font-sans tracking-tight">
+      <div className="max-w-3xl mx-auto">
         
-        <div className="p-8 md:p-14">
-          {/* ヘッダー：タイトルとリンクを横並びに */}
-          <header className="flex justify-between items-end mb-4">
-            <h1 className="text-2xl md:text-3xl font-bold text-stone-800 tracking-tight">
+        {/* ヘッダー部分：サイト全体のトーンに合わせた構成 */}
+        <header className="mb-12">
+          <Link href="/" className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-4">
+            ← HOME
+          </Link>
+          <div className="flex flex-col gap-1">
+            <span className="text-[#b28c6e] text-[10px] font-bold tracking-[0.3em] uppercase">About this site</span>
+            <h1 className="text-3xl md:text-4xl font-black text-stone-800 tracking-tighter">
               このサイトについて
             </h1>
-            <Link href="/" className="text-stone-400 text-sm font-medium hover:text-stone-600 transition-colors mb-1">
-              ホームへ戻る
-            </Link>
-          </header>
-
-          {/* 境界線 */}
-          <hr className="border-stone-400 mb-10" />
-          
-          {/* サイト説明 */}
-          <div className="space-y-4 text-base md:text-lg leading-relaxed text-stone-600 mb-12">
-            <p>
-              本サイトは、ストグラに登場する「暦家」のメンバーの活動を、タイムライン形式で見返すための<strong className="text-stone-800 font-bold">非公式のファンサイト</strong>です。
-            </p>
           </div>
+        </header>
 
-          {/* 注意事項：1枚目の画像のデザインを再現 */}
-          <section className="bg-[#fffbeb] rounded-3xl p-8 md:p-10 border border-amber-100/50 mb-16">
-            <h2 className="text-[#b45309] font-bold mb-6 flex items-center gap-2 text-lg">
+        <div className="space-y-8">
+          
+          {/* サイト概要カード */}
+          <section className="bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] border border-stone-100/60">
+            <p className="text-[15px] leading-relaxed tracking-normal">
+              当サイトは、ストグラに登場する<strong className="text-stone-900 font-bold underline decoration-stone-100 underline-offset-4">「暦家」</strong>のメンバーの活動を、タイムライン形式で見返しやすく整理した<strong className="text-stone-900 font-bold">非公式のファンサイト</strong>です。
+            </p>
+          </section>
+
+          {/* 注意事項セクション：色味を抑えて馴染ませる */}
+          <section className="bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] border border-stone-100/60">
+            <div className="flex items-center gap-2 mb-6">
+              <span className="text-[10px] font-bold tracking-widest text-[#b28c6e] uppercase">Precautions</span>
+              <div className="h-[1px] flex-grow bg-stone-100"></div>
+            </div>
+            
+            <h2 className="text-stone-800 font-bold mb-6 flex items-center gap-2 text-base">
               ⚠️ 注意事項
             </h2>
-            <ul className="space-y-4 text-[15px] leading-relaxed text-[#92400e]">
-              <li className="flex gap-2">
-                <span className="shrink-0">•</span>
-                <span><strong className="font-bold underline decoration-amber-200 underline-offset-4">各配信者様および運営様とは一切関係ありません。</strong> また、管理人の判断により予告なくサイトを非公開とする場合がございます。</span>
+            
+            <ul className="space-y-5 text-[13px] leading-relaxed text-stone-500 tracking-normal">
+              <li className="flex gap-3">
+                <span className="text-[#b28c6e] font-bold">01</span>
+                <span>各配信者様、およびストグラ運営様とは一切関係ございません。管理人の判断により予告なくサイトを非公開にする場合がございます。</span>
               </li>
-              <li className="flex gap-2">
-                <span className="shrink-0">•</span>
-                <span>情報の正確性には努めておりますが、有志による手動更新のため、間違いや抜け漏れが起こりうることをご了承ください。</span>
+              <li className="flex gap-3">
+                <span className="text-[#b28c6e] font-bold">02</span>
+                <span>リアルタイム更新ではございません。有志による手動更新のため、情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。</span>
               </li>
-              <li className="flex gap-2">
-                <span className="shrink-0">•</span>
-                <span>表示時間は目安であり、実際の滞在時間とはズレが生じる場合があります。</span>
+              <li className="flex gap-3">
+                <span className="text-[#b28c6e] font-bold">03</span>
+                <span>表示時間は目安であり、実際の配信時間や滞在時間とは数分のズレが生じる場合があります。</span>
               </li>
-              <li className="flex gap-2">
-                <span className="shrink-0">•</span>
-                <span><strong className="font-bold underline decoration-amber-200 underline-offset-4">ネタバレへの配慮：</strong> 本サイトには物語のネタバレが含まれます。未視聴の配信がある場合は十分にご注意ください。</span>
+              <li className="flex gap-3">
+                <span className="text-[#b28c6e] font-bold">04</span>
+                <span className="text-stone-700 font-medium">ネタバレへの配慮：本サイトには物語のネタバレが含まれます。未視聴の配信がある場合は十分にご注意ください。</span>
               </li>
-              <li className="flex gap-2 text-red-800">
-                <span className="shrink-0">•</span>
-                <span><strong className="font-bold underline decoration-red-200 underline-offset-4">メタ情報の取り扱い：</strong> 本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為に絶対に使用しないでください。</span>
+              <li className="flex gap-3 border-t border-stone-50 pt-4 mt-2">
+                <span className="text-red-400 font-bold">!</span>
+                <span className="text-stone-800">
+                  <strong className="font-bold underline decoration-red-100 underline-offset-4">メタ情報の取り扱い：</strong>
+                  本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為（鳩行為・メタ情報の持ち込み等）に絶対に使用しないでください。
+                </span>
               </li>
             </ul>
           </section>
 
-          {/* 情報の修正依頼（制作者情報：維持） */}
-        <section className="space-y-4">
-          <h2 className="text-xl font-bold">制作者情報</h2>
-          <div className="flex items-center gap-4 p-6 bg-white rounded-2xl border border-stone-100">
-            <div className="w-12 h-12 bg-stone-100 rounded-full flex items-center justify-center text-[#b28c6e]">X</div>
-            <div>
-              <p className="font-bold">アド🍉</p>
-              <a href="https://x.com/admiral_splus" target="_blank" className="text-[#b28c6e] text-sm hover:underline">@admiral_splus</a>
+          {/* 情報の修正依頼（制作者情報：UI維持・微調整） */}
+          <section className="pt-4">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-5 bg-[#b28c6e] rounded-full"></div>
+              <h2 className="text-lg font-bold text-stone-800 tracking-tight">情報の修正依頼について</h2>
             </div>
-          </div>
-        </section>
+            <p className="text-[13px] text-stone-500 mb-8 leading-relaxed px-1">
+              記載ミスや、未掲載の出会い・出来事の情報がございましたら、お手数ですが下記の制作者SNSまでDMにてお知らせいただけますと幸いです。
+            </p>
+            
+            {/* 制作者情報UI：元の構造を維持しつつトーンを調整 */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-white rounded-[1.5rem] border border-stone-100/80 shadow-sm">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-[#fcfaf8] rounded-full flex items-center justify-center text-[#b28c6e] text-sm font-black border border-stone-100">
+                  X
+                </div>
+                <div>
+                  <p className="text-[10px] text-stone-400 font-bold mb-0.5 tracking-widest uppercase">Contact</p>
+                  <p className="font-bold text-stone-800 text-[15px]">情報の追加・修正はこちらまで</p>
+                </div>
+              </div>
+              <a 
+                href="https://x.com/admiral_splus" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto px-6 py-2.5 bg-[#1d9bf0] hover:bg-[#1a8cd8] text-white rounded-full font-bold text-[13px] text-center transition-all shadow-sm flex items-center justify-center gap-2"
+              >
+                アド🍉 @admiral_splus
+              </a>
+            </div>
+          </section>
         </div>
 
+        {/* フッター余白 */}
+        <footer className="py-20 text-center">
+          <p className="text-[10px] text-stone-300 font-bold tracking-[0.4em]">KOYOMI-KE ARCHIVES</p>
+        </footer>
       </div>
     </main>
   );
