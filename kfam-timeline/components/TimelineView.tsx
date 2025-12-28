@@ -17,21 +17,33 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
   const timeLabels = getTimeLabels(data[0]?.シーズン || "Season2");
   const groupKeys = Array.from(new Set(data.map(d => viewMode === "member" ? d.暦家 : d.場所)));
 
-  // 修正：連鎖する「島」をすべて抽出するロジック
+  // 1. 視覚的な重なりを判定してグループ化する関数
   const handleItemClick = (targetItem: ArchiveData, scopeItems: ArchiveData[]) => {
+    // ヘルパー：アイテムの視覚的な開始・終了位置（％）を取得
+    const getVisualBounds = (item: ArchiveData) => {
+      const s = getPosition(item.開始時間, item.シーズン);
+      const e = getPosition(item.終了時間, item.シーズン);
+      const visualWidth = Math.max(e - s, 1.2); // 最小幅1.2を考慮
+      return { start: s, end: s + visualWidth };
+    };
+
     let cluster: ArchiveData[] = [targetItem];
     let added = true;
 
-    // 重なりが繋がっているものをすべて抽出
+    // 2. 視覚的に接触しているバーをすべて抽出（連鎖判定）
     while (added) {
       added = false;
+      const currentBounds = cluster.map(getVisualBounds);
+
       scopeItems.forEach(item => {
         if (!cluster.find(c => c === item)) {
-          // cluster内のいずれかのアイテムと重なり、または連続していれば追加
-          const isOverlappingWithAny = cluster.some(c => 
-            item.開始時間 <= c.終了時間 && item.終了時間 >= c.開始時間
+          const itemBounds = getVisualBounds(item);
+          // 既存のクラスター内のいずれかのバーと「見た目」が重なっているか
+          const isOverlappingVisually = currentBounds.some(cb => 
+            itemBounds.start <= cb.end && itemBounds.end >= cb.start
           );
-          if (isOverlappingWithAny) {
+
+          if (isOverlappingVisually) {
             cluster.push(item);
             added = true;
           }
@@ -207,7 +219,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       return (
                         <div
                           key={i}
-                          className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20 group"
+                          className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
                           style={{
                             left: `${start}%`,
                             width: `${visualWidth}%`,
@@ -221,9 +233,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                           {/* クリック領域拡張用の透明な擬似要素（左右に4pxずつ判定を広げる） */}
                           <div className="absolute inset-y-0 -left-1 -right-1 z-30" />
 
-                          <span className="truncate relative z-10">
-                            {visualWidth > 4 ? item.場所 : ""}
-                          </span>
+                          {visualWidth > 4 && <span className="truncate font-bold relative z-10">{item.場所}</span>}
                         </div>
                       );
                     })}
