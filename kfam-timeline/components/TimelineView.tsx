@@ -17,13 +17,30 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
   const timeLabels = getTimeLabels(data[0]?.シーズン || "Season2");
   const groupKeys = Array.from(new Set(data.map(d => viewMode === "member" ? d.暦家 : d.場所)));
 
-  // 重複を判定してセットする関数
+  // 修正：連鎖する「島」をすべて抽出するロジック
   const handleItemClick = (targetItem: ArchiveData, scopeItems: ArchiveData[]) => {
-    // タップしたアイテムの時間と1分でも重なっているものを抽出
-    const clusters = scopeItems.filter(item => 
-      item.開始時間 <= targetItem.終了時間 && item.終了時間 >= targetItem.開始時間
-    );
-    setSelectedItems(clusters);
+    let cluster: ArchiveData[] = [targetItem];
+    let added = true;
+
+    // 重なりが繋がっているものをすべて抽出
+    while (added) {
+      added = false;
+      scopeItems.forEach(item => {
+        if (!cluster.find(c => c === item)) {
+          // cluster内のいずれかのアイテムと重なり、または連続していれば追加
+          const isOverlappingWithAny = cluster.some(c => 
+            item.開始時間 <= c.終了時間 && item.終了時間 >= c.開始時間
+          );
+          if (isOverlappingWithAny) {
+            cluster.push(item);
+            added = true;
+          }
+        }
+      });
+    }
+
+    // 時間順に並び替えて詳細カードに表示
+    setSelectedItems(cluster.sort((a, b) => a.開始時間.localeCompare(b.開始時間)));
   };
 
   const toggleRow = (key: string) => {
@@ -185,21 +202,28 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                     {items.map((item, i) => {
                       const start = getPosition(item.開始時間, item.シーズン);
                       const end = getPosition(item.終了時間, item.シーズン);
+                      const visualWidth = Math.max(end - start, 1.2);
+
                       return (
                         <div
                           key={i}
-                          className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20"
+                          className="absolute h-10 rounded-lg text-[10px] flex items-center px-2 shadow-sm border border-black/5 cursor-pointer transition-all hover:scale-[1.02] z-20 group"
                           style={{
                             left: `${start}%`,
-                            width: `${Math.max(end - start, 1.2)}%`,
+                            width: `${visualWidth}%`,
                             top: `12px`, // 常に1段目に配置
                             backgroundColor: getLocationColor(item),
-                            opacity: 0.85, // 重なりが見えるよう少し透過
+                            opacity: 0.9, // 重なりが見えるよう少し透過
                             color: '#1c1917'
                           }}
                           onClick={() => handleItemClick(item, items)}
                         >
-                          <span className="truncate">{item.場所}</span>
+                          {/* クリック領域拡張用の透明な擬似要素（左右に4pxずつ判定を広げる） */}
+                          <div className="absolute inset-y-0 -left-1 -right-1 z-30" />
+
+                          <span className="truncate relative z-10">
+                            {visualWidth > 4 ? item.場所 : ""}
+                          </span>
                         </div>
                       );
                     })}
