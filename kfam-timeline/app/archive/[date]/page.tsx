@@ -56,19 +56,19 @@ export default async function DateDetailPage(props: {
   return (
     <main className="min-h-screen bg-[#fcfaf8] pb-20">
       {/* ヘッダーセクション */}
-      <header className="px-8 py-16 max-w-7xl mx-auto">
+      <header className="px-8 py-12 max-w-7xl mx-auto">
         <Link
           href="/archive"
-          className="text-stone-400 text-[10px] font-black tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8 uppercase"
+          className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-6 uppercase"
         >
           <ChevronLeft className="w-3 h-3" /> Back to Archives
         </Link>
-        <div className="space-y-3">
-          <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
+        <div className="space-y-2">
+          <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
             Observation Logfile
           </p>
-          <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
-            {displayDate}
+          <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
+            {displayDate} <span className="text-stone-200 font-normal ml-2 text-2xl">の記録詳細</span>
           </h1>
         </div>
       </header>

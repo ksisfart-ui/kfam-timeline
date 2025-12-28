@@ -20,20 +20,19 @@ export default function ArchivePage() {
 
   return (
     <main className="min-h-screen bg-[#fcfaf8] p-10">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-16">
-          <Link href="/" className="text-stone-400 text-[10px] font-black tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8 uppercase">
-            ← Back to Home
-          </Link>
-          <div className="space-y-3">
-            <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
-              History / Archive Collections
-            </p>
-            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
-              過去の記録一覧
-            </h1>
-          </div>
+      <div className="mb-12">
+        <Link href="/" className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-6 uppercase">
+          ← Back to Home
+        </Link>
+        <div className="space-y-2">
+          <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
+            History / Archive Collections
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
+            過去の記録一覧
+          </h1>
         </div>
+      </div>
 
         {/* 月別フィルター */}
         <div className="flex gap-2 overflow-x-auto pb-8 no-scrollbar">

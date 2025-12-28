@@ -25,12 +25,12 @@ export default async function Page() {
   return (
     <main className="min-h-screen bg-[#fcfaf8] pb-24">
       <header className="px-8 py-16 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div className="space-y-3">
-          <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
-            Koyomi-ke Timeline
+        <div className="space-y-2">
+          <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
+            Koyomi-ke Unofficial Timeline
           </p>
           <div className="flex items-center gap-4">
-            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
               最新の記録 <span className="text-stone-300 font-light ml-2">{latestDate}</span>
             </h1>
             {isLatestPreparing && (
