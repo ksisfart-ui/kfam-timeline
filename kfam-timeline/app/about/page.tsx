@@ -11,7 +11,7 @@ export default function AboutPage() {
             ⇐ホームへ戻る
           </Link>
           <div className="flex flex-col gap-1">
-            <h1 className="text-[#b28c6e] text-[10px] font-bold tracking-[0.3em] uppercase">
+            <h1 className="text-3xl md:text-4xl font-black text-stone-800 tracking-tighter">
               About this site
             </h1>
           </div>
