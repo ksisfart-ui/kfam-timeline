@@ -99,6 +99,10 @@ export default async function Page() {
       <Link href="/about" className="block w-full bg-stone-50 p-4 rounded-2xl text-xs font-bold text-stone-500 hover:bg-stone-100 transition-all text-center">
         このサイトについて・注意事項
       </Link>
+      {/* フッター */}
+        <footer className="py-20 text-center">
+          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Koyomi-ke Timeline</p>
+        </footer>
     </main>
   );
 }
