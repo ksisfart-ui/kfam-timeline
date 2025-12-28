@@ -2,31 +2,53 @@ import Link from "next/link";
 
 export default function AboutPage() {
   return (
-    <main className="min-h-screen bg-[#fcfaf8] p-8 md:p-16 text-stone-700">
-      <div className="max-w-3xl mx-auto space-y-12">
-        <header>
-          <Link href="/" className="text-[#b28c6e] text-xs font-bold tracking-widest hover:opacity-70">← ホームへ戻る</Link>
-          <h1 className="text-4xl font-black text-stone-800 mt-6 tracking-tighter">このサイトについて</h1>
-        </header>
+    <main className="min-h-screen bg-[#f8f9fa] p-4 md:p-12 text-stone-700 font-sans">
+      <div className="max-w-3xl mx-auto bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden">
+        
+        {/* ヘッダーセクション */}
+        <div className="p-8 md:p-12 border-b border-stone-50">
+          <div className="flex justify-between items-baseline mb-6">
+            <h1 className="text-2xl md:text-3xl font-bold text-stone-800 tracking-tight">
+              このサイトについて
+            </h1>
+            <Link href="/" className="text-stone-400 text-sm font-medium hover:text-[#b28c6e] transition-colors">
+              ホームへ戻る
+            </Link>
+          </div>
+          
+          <div className="space-y-4 text-sm md:text-base leading-relaxed text-stone-600">
+            <p>
+              本サイトは、ストグラに登場する<strong className="text-stone-800">「暦家」</strong>のメンバーの活動を、タイムライン形式で見返しやすく整理した<strong className="text-stone-800">非公式のファンサイト</strong>です。
+            </p>
+          </div>
+        </div>
 
-        <section className="space-y-4">
-          <p className="leading-relaxed">
-            当サイトは、ストグラに登場する「暦家」の活動を、タイムライン形式で見返しやすく整理した非公式のファンサイトです。
-          </p>
-        </section>
-
-        <section className="bg-white rounded-[2rem] p-8 shadow-sm border border-stone-100 space-y-6">
-          <h2 className="text-xl font-bold border-b border-stone-100 pb-2">注意事項</h2>
-          <ul className="space-y-3 text-sm list-disc pl-5 marker:text-[#b28c6e]">
-            <li>各配信者様、およびストグラ運営様とは一切関係ございません。</li>
-            <li>管理人の判断により、予告なく非公開にする場合がございます。</li>
-            <li>リアルタイム更新ではございません。</li>
-            <li>情報の正確性には努めておりますが、手動更新のため間違いが含まれる可能性があります。</li>
-            <li>表示時間は目安であり、実際の配信時間とは数分のズレが生じる場合があります。</li>
-            <li>ネタバレが含まれますので、閲覧の際はご注意ください。</li>
-            <li><strong>このサイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような鳩行為・メタ情報の持ち込み等に使用しないでください。</strong></li>
-          </ul>
-        </section>
+        <div className="p-8 md:p-12 space-y-12">
+          
+          {/* 注意事項セクション */}
+          <section className="bg-amber-50/50 rounded-2xl p-6 md:p-8 border border-amber-100/50">
+            <h2 className="text-amber-800 font-bold mb-4 flex items-center gap-2">
+              <span className="text-lg">⚠️</span> 注意事項
+            </h2>
+            <ul className="space-y-4 text-sm leading-relaxed text-amber-900/80">
+              <li>
+                <span className="font-bold">各配信者様、および運営様とは一切関係ありません。</span>また、管理人の判断により予告なくサイトを非公開にする場合がございます。
+              </li>
+              <li>
+                <span className="font-bold">更新頻度：</span>リアルタイム更新ではありません。有志による手動更新のため、情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。
+              </li>
+              <li>
+                表示時間は目安であり、実際の滞在時間とはズレが生じる場合があります。
+              </li>
+              <li>
+                <span className="font-bold">ネタバレへの配慮：</span>本サイトには物語のネタバレが含まれる可能性があります。未視聴の配信がある場合は十分にご注意ください。
+              </li>
+              <li>
+                <span className="font-bold text-red-700 underline decoration-red-200 underline-offset-4">メタ情報の取り扱い：</span>
+                本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為に絶対に使用しないでください。
+              </li>
+            </ul>
+          </section>
 
         <section className="space-y-4">
           <h2 className="text-xl font-bold">制作者情報</h2>
@@ -38,6 +60,11 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
+
+        </div>
+
+        {/* フッター余白 */}
+        <div className="h-8 bg-stone-50/30"></div>
       </div>
     </main>
   );
