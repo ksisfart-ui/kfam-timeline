@@ -30,7 +30,7 @@ export default function ArchivePage() {
               History / Archive Collections
             </p>
             <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
-              活動の軌跡
+              過去の記録一覧
             </h1>
           </div>
         </div>

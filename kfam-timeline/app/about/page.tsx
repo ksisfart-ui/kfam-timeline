@@ -14,7 +14,7 @@ export default function AboutPage() {
             <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
               About this project
             </p>
-            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-txl font-black text-stone-800 tracking-tighter leading-none">
               このサイトについて
             </h1>
           </div>

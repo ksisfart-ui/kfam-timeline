@@ -68,7 +68,7 @@ export default async function DateDetailPage(props: {
             Observation Logfile
           </p>
           <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
-            {displayDate} <span className="text-stone-200 font-light ml-2 text-3xl md:text-4xl">記録詳細</span>
+            {displayDate}
           </h1>
         </div>
       </header>
@@ -81,7 +81,7 @@ export default async function DateDetailPage(props: {
       {/* フッター的な案内 */}
       <div className="mt-12 text-center">
         <Link href="/archive" className="inline-flex items-center gap-2 px-8 py-3 bg-stone-800 text-white rounded-full text-xs font-bold hover:bg-stone-700 transition-all shadow-xl shadow-stone-200">
-          他のアーカイブも探す
+          他の記録も探す
         </Link>
       </div>
 
