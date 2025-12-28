@@ -33,15 +33,23 @@ export default async function Page() {
             </h1>
             {/* ヘッダーの日付横に準備中ステータスを表示 */}
             {isLatestPreparing && (
-              <span className="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-bold rounded-full animate-pulse">
+              <span className="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-bold rounded-full">
                 準備中
               </span>
             )}
           </div>
         </div>
-        <Link href="/archive" className="px-10 py-4 bg-white border border-stone-200 text-stone-600 rounded-2xl text-xs font-bold shadow-sm hover:shadow-md transition-all">
-          アーカイブ一覧
-        </Link>
+
+        <div className="flex items-center gap-4">
+          {/* 画面右上：このサイトについて（インフォアイコン付き） */}
+          <Link href="/about" className="flex items-center gap-2 px-4 py-2 text-stone-500 hover:text-[#b28c6e] transition-colors border border-transparent hover:border-stone-200 rounded-xl">
+            <Info className="w-4 h-4" />
+            <span className="text-xs font-bold">このサイトについて</span>
+          </Link>
+          <Link href="/archive" className="px-10 py-4 bg-white border border-stone-200 text-stone-600 rounded-2xl text-xs font-bold shadow-sm hover:shadow-md transition-all">
+            アーカイブ一覧
+          </Link>
+        </div>
       </header>
 
       {/* ステータス & お知らせエリア */}
@@ -51,7 +59,7 @@ export default async function Page() {
           {/* SYSTEM STATUS */}
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <span className={`w-2 h-2 rounded-full ${updatingDates.length > 0 ? 'bg-[#b28c6e] animate-pulse' : 'bg-stone-300'}`} />
+              <span className={`w-2 h-2 rounded-full ${updatingDates.length > 0 ? 'bg-[#b28c6e]' : 'bg-stone-300'}`} />
               <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase">System Status</p>
             </div>
             <p className="text-sm font-bold text-stone-700 ml-4">
@@ -82,6 +90,11 @@ export default async function Page() {
               {newsList.length === 0 && <p className="text-xs text-stone-300">現在、新しいお知らせはありません。</p>}
             </div>
           </section>
+
+          {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
+          <Link href="/about" className="block w-full bg-stone-50 p-4 rounded-2xl text-xs font-bold text-stone-500 hover:bg-stone-100 transition-all text-center">
+            このサイトについて・注意事項
+          </Link>
         </div>
 
         <TimelineView data={latestData} />
