@@ -27,10 +27,10 @@ export default async function Page() {
       <header className="px-8 py-16 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-3">
           <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
-            Koyomi-ke Timeline / Home
+            Koyomi-ke Timeline
           </p>
           <div className="flex items-center gap-4">
-            <h1 className="text-5xl md:text-4xl font-black text-stone-800 tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
               最新の記録 <span className="text-stone-300 font-light ml-2">{latestDate}</span>
             </h1>
             {isLatestPreparing && (
@@ -44,10 +44,10 @@ export default async function Page() {
         <div className="flex items-center gap-4">
           <Link href="/about" className="flex items-center gap-2 px-4 py-2 text-stone-500 hover:text-[#b28c6e] transition-colors border border-stone-100 bg-white/50 rounded-xl">
             <Info className="w-4 h-4" />
-            <span className="text-[10px] font-black tracking-widest uppercase">このサイトについて</span>
+            <span className="text-[10px] font-black tracking-widest uppercase">About</span>
           </Link>
           <Link href="/archive" className="px-10 py-4 bg-stone-800 text-white rounded-2xl text-[10px] font-black tracking-widest uppercase shadow-xl shadow-stone-200 hover:bg-stone-700 transition-all">
-            過去の記録
+            Archive
           </Link>
         </div>
       </header>

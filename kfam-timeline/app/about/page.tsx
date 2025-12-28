@@ -14,7 +14,7 @@ export default function AboutPage() {
             <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
               About this project
             </p>
-            <h1 className="text-5xl md:text-txl font-black text-stone-800 tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
               このサイトについて
             </h1>
           </div>
@@ -25,7 +25,7 @@ export default function AboutPage() {
           {/* サイト概要：ボックスと文字サイズを小さくし、装飾を排除 */}
           <section className="bg-white rounded-[1.5rem] p-6 md:p-8 shadow-[0_8px_30px_rgb(0,0,0,0.01)] border border-stone-100/60">
             <p className="text-[14px] md:text-[15px] leading-relaxed tracking-normal text-stone-700 font-medium">
-              当サイトは、ストグラに登場する「暦家」の活動を、タイムライン形式で見返すための<strong className="text-stone-900 font-black">非公式ファンサイト</strong>です。
+              本サイトは、ストグラに登場する「暦家」の活動を、タイムライン形式で見返すための<strong className="text-stone-900 font-black">非公式ファンサイト</strong>です。
             </p>
           </section>
 
@@ -41,7 +41,7 @@ export default function AboutPage() {
             
             <div className="space-y-8">
               {[
-                { label: "公式との関係", text: "各配信者様、および運営様とは一切関係ありません。また、管理人の判断により予告なくサイトを非公開にする場合がございます。", important: true },
+                { label: "公式との関係", text: "各配信者様、および運営様とは一切関係ありません。また、予告なく非公開にする場合がございます。", important: true },
                 { label: "更新について", text: "有志による手動更新のため、リアルタイムではありません。情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。" },
                 { label: "時間表記", text: "表示時間は目安です。実際の配信や滞在時間とは数分のズレが生じる場合があります。" },
                 { label: "ネタバレ", text: "物語のネタバレが含まれます。未視聴の配信がある場合は十分にご注意ください。", important: true },
