@@ -99,6 +99,11 @@ export default async function Page() {
 
         <TimelineView data={latestData} />
       </div>
+
+      {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
+      <Link href="/about" className="block w-full bg-stone-50 p-4 rounded-2xl text-xs font-bold text-stone-500 hover:bg-stone-100 transition-all text-center">
+        このサイトについて・注意事項
+      </Link>
     </main>
   );
 }
