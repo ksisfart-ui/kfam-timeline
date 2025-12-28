@@ -90,11 +90,6 @@ export default async function Page() {
               {newsList.length === 0 && <p className="text-xs text-stone-300">現在、新しいお知らせはありません。</p>}
             </div>
           </section>
-
-          {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
-          <Link href="/about" className="block w-full bg-stone-50 p-4 rounded-2xl text-xs font-bold text-stone-500 hover:bg-stone-100 transition-all text-center">
-            このサイトについて・注意事項
-          </Link>
         </div>
 
         <TimelineView data={latestData} />
