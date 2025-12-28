@@ -6,13 +6,15 @@ export default function AboutPage() {
       <div className="max-w-2xl mx-auto">
         
         {/* ヘッダー部分 */}
-        <header className="mb-10"> {/* 余白を少し詰めました */}
-          <Link href="/" className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8">
-            ← HOMEへ戻る
+        <header className="mb-16">
+          <Link href="/" className="text-stone-400 text-[10px] font-black tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8 uppercase">
+            ← Back to Home
           </Link>
-          <div className="flex flex-col gap-4"> {/* ラベルとの間隔を少し広げました */}
-            <span className="text-[#b28c6e] text-[10px] font-extrabold tracking-[0.3em] uppercase">About this site</span>
-            <h1 className="text-4xl md:text-5xl font-black text-stone-800 tracking-tighter leading-none">
+          <div className="space-y-3">
+            <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
+              About this project
+            </p>
+            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
               このサイトについて
             </h1>
           </div>
@@ -96,7 +98,7 @@ export default function AboutPage() {
 
         {/* フッター */}
         <footer className="py-20 text-center">
-          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Koyomi-ke Timeline</p>
+          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
         </footer>
       </div>
     </main>

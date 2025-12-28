@@ -22,8 +22,17 @@ export default function ArchivePage() {
     <main className="min-h-screen bg-[#fcfaf8] p-10">
       <div className="max-w-4xl mx-auto">
         <div className="mb-16">
-          <Link href="/" className="text-[#b28c6e] text-xs font-bold tracking-widest">← ホームへ戻る</Link>
-          <h1 className="text-5xl font-black text-stone-800 mt-6 tracking-tighter">活動の軌跡</h1>
+          <Link href="/" className="text-stone-400 text-[10px] font-black tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8 uppercase">
+            ← Back to Home
+          </Link>
+          <div className="space-y-3">
+            <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
+              History / Archive Collections
+            </p>
+            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
+              活動の軌跡
+            </h1>
+          </div>
         </div>
 
         {/* 月別フィルター */}
@@ -57,7 +66,7 @@ export default function ArchivePage() {
       </div>
       {/* フッター */}
         <footer className="py-20 text-center">
-          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Koyomi-ke Timeline</p>
+          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
         </footer>
     </main>
   );

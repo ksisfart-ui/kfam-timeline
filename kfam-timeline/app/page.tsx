@@ -24,14 +24,15 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-[#fcfaf8] pb-24">
-      <header className="px-8 py-12 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <div className="space-y-2">
-          <p className="text-[#b28c6e] text-xs font-bold tracking-[0.3em] pl-1">KOYOMI-KE TIMELINE</p>
+      <header className="px-8 py-16 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+        <div className="space-y-3">
+          <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
+            Koyomi-ke Timeline / Dashboard
+          </p>
           <div className="flex items-center gap-4">
-            <h1 className="text-5xl font-black text-stone-800 tracking-tighter leading-none">
+            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
               活動記録 <span className="text-stone-300 font-light ml-2">{latestDate}</span>
             </h1>
-            {/* ヘッダーの日付横に準備中ステータスを表示 */}
             {isLatestPreparing && (
               <span className="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-bold rounded-full">
                 準備中
@@ -41,13 +42,12 @@ export default async function Page() {
         </div>
 
         <div className="flex items-center gap-4">
-          {/* 画面右上：このサイトについて（インフォアイコン付き） */}
-          <Link href="/about" className="flex items-center gap-2 px-4 py-2 text-stone-500 hover:text-[#b28c6e] transition-colors border border-transparent hover:border-stone-200 rounded-xl">
+          <Link href="/about" className="flex items-center gap-2 px-4 py-2 text-stone-500 hover:text-[#b28c6e] transition-colors border border-stone-100 bg-white/50 rounded-xl">
             <Info className="w-4 h-4" />
-            <span className="text-xs font-bold">このサイトについて</span>
+            <span className="text-[10px] font-black tracking-widest uppercase">About</span>
           </Link>
-          <Link href="/archive" className="px-10 py-4 bg-white border border-stone-200 text-stone-600 rounded-2xl text-xs font-bold shadow-sm hover:shadow-md transition-all">
-            アーカイブ一覧
+          <Link href="/archive" className="px-10 py-4 bg-stone-800 text-white rounded-2xl text-[10px] font-black tracking-widest uppercase shadow-xl shadow-stone-200 hover:bg-stone-700 transition-all">
+            Archive list
           </Link>
         </div>
       </header>
@@ -101,7 +101,7 @@ export default async function Page() {
       </Link>
       {/* フッター */}
         <footer className="py-20 text-center">
-          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Koyomi-ke Timeline</p>
+          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
         </footer>
     </main>
   );
