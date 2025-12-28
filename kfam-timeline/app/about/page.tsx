@@ -8,12 +8,11 @@ export default function AboutPage() {
         {/* ヘッダー部分：サイト全体のトーンに合わせた構成 */}
         <header className="mb-12">
           <Link href="/" className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-4">
-            ← HOME
+            ⇐ホームへ戻る
           </Link>
           <div className="flex flex-col gap-1">
-            <span className="text-[#b28c6e] text-[10px] font-bold tracking-[0.3em] uppercase">About this site</span>
-            <h1 className="text-3xl md:text-4xl font-black text-stone-800 tracking-tighter">
-              このサイトについて
+            <h1 className="text-[#b28c6e] text-[10px] font-bold tracking-[0.3em] uppercase">
+              About this site
             </h1>
           </div>
         </header>
@@ -23,7 +22,7 @@ export default function AboutPage() {
           {/* サイト概要カード */}
           <section className="bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] border border-stone-100/60">
             <p className="text-[15px] leading-relaxed tracking-normal">
-              当サイトは、ストグラに登場する<strong className="text-stone-900 font-bold underline decoration-stone-100 underline-offset-4">「暦家」</strong>のメンバーの活動を、タイムライン形式で見返しやすく整理した<strong className="text-stone-900 font-bold">非公式のファンサイト</strong>です。
+              当サイトは、ストグラに登場する「暦家」の活動を、タイムライン形式で見返すための<strong className="text-stone-900 font-bold">非公式ファンサイト</strong>です。
             </p>
           </section>
 
@@ -41,15 +40,15 @@ export default function AboutPage() {
             <ul className="space-y-5 text-[13px] leading-relaxed text-stone-500 tracking-normal">
               <li className="flex gap-3">
                 <span className="text-[#b28c6e] font-bold">01</span>
-                <span>各配信者様、およびストグラ運営様とは一切関係ございません。管理人の判断により予告なくサイトを非公開にする場合がございます。</span>
+                <span><strong className="text-stone-900 font-bold underline decoration-stone-100 underline-offset-4">各配信者様、および運営様とは一切関係ありません。</strong>また、管理人の判断により予告なくサイトを非公開にする場合がございます。</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#b28c6e] font-bold">02</span>
-                <span>リアルタイム更新ではございません。有志による手動更新のため、情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。</span>
+                <span>リアルタイム更新ではありません。有志による手動更新のため、情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#b28c6e] font-bold">03</span>
-                <span>表示時間は目安であり、実際の配信時間や滞在時間とは数分のズレが生じる場合があります。</span>
+                <span>表示時間は目安であり、実際の滞在時間とは数分のズレが生じる場合があります。</span>
               </li>
               <li className="flex gap-3">
                 <span className="text-[#b28c6e] font-bold">04</span>
@@ -59,7 +58,7 @@ export default function AboutPage() {
                 <span className="text-red-400 font-bold">!</span>
                 <span className="text-stone-800">
                   <strong className="font-bold underline decoration-red-100 underline-offset-4">メタ情報の取り扱い：</strong>
-                  本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為（鳩行為・メタ情報の持ち込み等）に絶対に使用しないでください。
+                  本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為（鳩・指示コメント等）に絶対に使用しないでください。
                 </span>
               </li>
             </ul>
@@ -67,13 +66,6 @@ export default function AboutPage() {
 
           {/* 情報の修正依頼（制作者情報：UI維持・微調整） */}
           <section className="pt-4">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-1 h-5 bg-[#b28c6e] rounded-full"></div>
-              <h2 className="text-lg font-bold text-stone-800 tracking-tight">情報の修正依頼について</h2>
-            </div>
-            <p className="text-[13px] text-stone-500 mb-8 leading-relaxed px-1">
-              記載ミスや、未掲載の出会い・出来事の情報がございましたら、お手数ですが下記の制作者SNSまでDMにてお知らせいただけますと幸いです。
-            </p>
             
             {/* 制作者情報UI：元の構造を維持しつつトーンを調整 */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-6 bg-white rounded-[1.5rem] border border-stone-100/80 shadow-sm">
@@ -83,7 +75,7 @@ export default function AboutPage() {
                 </div>
                 <div>
                   <p className="text-[10px] text-stone-400 font-bold mb-0.5 tracking-widest uppercase">Contact</p>
-                  <p className="font-bold text-stone-800 text-[15px]">情報の追加・修正はこちらまで</p>
+                  <p className="font-bold text-stone-800 text-[15px]">制作者SNS</p>
                 </div>
               </div>
               <a 
@@ -100,7 +92,7 @@ export default function AboutPage() {
 
         {/* フッター余白 */}
         <footer className="py-20 text-center">
-          <p className="text-[10px] text-stone-300 font-bold tracking-[0.4em]">KOYOMI-KE ARCHIVES</p>
+          <p className="text-[10px] text-stone-300 font-bold tracking-[0.4em]">KOYOMI-KE TIMELINE</p>
         </footer>
       </div>
     </main>
