@@ -6,15 +6,15 @@ export default function AboutPage() {
       <div className="max-w-2xl mx-auto">
         
         {/* ヘッダー部分 */}
-        <header className="mb-16">
-          <Link href="/" className="text-stone-400 text-[10px] font-black tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8 uppercase">
+        <header className="mb-12">
+          <Link href="/" className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-8 uppercase">
             ← Back to Home
           </Link>
-          <div className="space-y-3">
-            <p className="text-[#b28c6e] text-[10px] font-black tracking-[0.4em] uppercase pl-1">
+          <div className="space-y-2">
+            <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
               About this project
             </p>
-            <h1 className="text-5xl md:text-6xl font-black text-stone-800 tracking-tighter leading-none">
+            <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
               このサイトについて
             </h1>
           </div>

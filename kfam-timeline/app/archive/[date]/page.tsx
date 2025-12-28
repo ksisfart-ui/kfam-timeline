@@ -1,76 +1,94 @@
-"use client";
-import React, { useState, useEffect } from 'react';
 import { fetchArchiveData } from "@/lib/dataFetcher";
-import { groupDatesByMonth } from "@/lib/utils";
+import TimelineView from "@/components/TimelineView";
 import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
 
-export default function ArchivePage() {
-  const [data, setData] = useState<string[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<string>("すべて");
+export const dynamic = 'force-dynamic';
 
-  useEffect(() => {
-    fetchArchiveData(process.env.NEXT_PUBLIC_SHEET_URL || "").then(res => {
-      const dates = Array.from(new Set(res.map((d: any) => d.日付))).sort().reverse();
-      setData(dates as string[]);
-    });
-  }, []);
+// Next.js 15+ の規約に従い params を Promise として扱います
+export default async function DateDetailPage(props: {
+  params: Promise<{ date: string }>
+}) {
+  const params = await props.params;
 
-  const groupedDates = groupDatesByMonth(data);
-  const months = ["すべて", ...Object.keys(groupedDates)];
+  // URLの "2025-12-26" を "2025/12/26" に戻す
+  const displayDate = params.date.replaceAll("-", "/");
+
+  const CSV_URL = process.env.NEXT_PUBLIC_SHEET_URL || "";
+  const allData = await fetchArchiveData(CSV_URL);
+
+  // 指定された日付のデータのみを抽出
+  const filteredData = allData.filter(d => d.日付 === displayDate);
+
+  // ステータスが「準備中」または「順番待ち」の場合
+  const status = filteredData[0]?.ステータス;
+  const isPending = status === "準備中" || status === "順番待ち";
+
+  // 詳細データ（開始時間や場所）が一切ない場合
+  const hasNoDetails = filteredData.every(d => !d.開始時間 || !d.場所);
+
+  if (isPending || hasNoDetails) {
+    return (
+      <div className="min-h-screen bg-[#fcfaf8] flex flex-col items-center justify-center p-8 text-center">
+        <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center text-2xl mb-6">📡</div>
+        <h1 className="text-2xl font-black text-stone-800 mb-2">{isPending ? status : "観測データ受信中"}</h1>
+        <p className="text-stone-400 text-sm max-w-xs">
+          現在、{displayDate} の観測データを解析しています。表示まで今しばらくお待ちください。
+        </p>
+        <Link href="/archive" className="mt-8 text-[#b28c6e] font-bold text-xs underline">一覧へ戻る</Link>
+      </div>
+    );
+  }
+
+  // データが見つからない場合の処理
+  if (!filteredData.length) {
+    return (
+      <div className="min-h-screen bg-[#fcfaf8] flex flex-col items-center justify-center p-8">
+        <h1 className="text-xl font-bold text-stone-800 mb-4">データが見つかりませんでした</h1>
+        <p className="text-stone-400 mb-8">{displayDate} の記録はまだ登録されていないようです。</p>
+        <Link href="/archive" className="text-[#b28c6e] font-bold hover:underline italic">
+          ← BACK TO ARCHIVES
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#fcfaf8] pb-20">
-      <div className="max-w-4xl mx-auto px-8 py-12">
-        {/* ヘッダーセクション */}
-        <div className="mb-12">
-          <Link href="/" className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-6 uppercase">
-            ← Back to Home
-          </Link>
-          <div className="space-y-2">
-            <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
-              History / Archive Collections
-            </p>
-            <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
-              過去の記録一覧
-            </h1>
-          </div>
+      {/* ヘッダーセクション */}
+      <header className="px-8 py-12 max-w-7xl mx-auto">
+        <Link
+          href="/archive"
+          className="text-stone-400 text-[10px] font-bold tracking-[0.2em] hover:text-[#b28c6e] transition-colors flex items-center gap-1 mb-6 uppercase"
+        >
+          <ChevronLeft className="w-3 h-3" /> Back to Archives
+        </Link>
+        <div className="space-y-2">
+          <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
+            Observation Logfile
+          </p>
+          <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
+            {displayDate} <span className="text-stone-200 font-normal ml-2 text-2xl">の記録詳細</span>
+          </h1>
         </div>
+      </header>
 
-        {/* 月別フィルター */}
-        <div className="flex gap-2 overflow-x-auto pb-8 no-scrollbar">
-          {months.map(month => (
-            <button
-              key={month}
-              onClick={() => setSelectedMonth(month)}
-              className={`px-6 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${selectedMonth === month ? "bg-stone-800 text-white shadow-lg" : "bg-white text-stone-400 border border-stone-100"}`}
-            >
-              {month}
-            </button>
-          ))}
-        </div>
+      {/* タイムラインコンポーネント（再利用） */}
+      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+        <TimelineView data={filteredData} />
+      </div>
 
-        {/* リストエリア */}
-        {Object.entries(groupedDates)
-          .filter(([month]) => selectedMonth === "すべて" || month === selectedMonth)
-          .map(([month, dates]) => (
-          <div key={month} className="mb-12">
-            <h2 className="text-sm font-black text-[#b28c6e] mb-6 tracking-[0.2em]">{month}</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {dates.map(date => (
-                <Link key={date} href={`/archive/${date.replaceAll("/", "-")}`} className="group p-8 bg-white rounded-[2rem] border border-stone-100 hover:border-[#b28c6e] transition-all hover:shadow-xl flex justify-between items-center">
-                  <span className="text-2xl font-bold text-stone-700 group-hover:text-[#b28c6e] transition-colors tracking-tighter">{date}</span>
-                  <div className="w-12 h-12 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-[#b28c6e]/10 group-hover:text-[#b28c6e] text-stone-200 transition-all text-xl">→</div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        ))}
+      {/* フッター的な案内 */}
+      <div className="mt-12 text-center">
+        <Link href="/archive" className="inline-flex items-center gap-2 px-8 py-3 bg-stone-800 text-white rounded-full text-xs font-bold hover:bg-stone-700 transition-all shadow-xl shadow-stone-200">
+          他の記録も探す
+        </Link>
       </div>
 
       {/* フッター */}
-      <footer className="py-20 text-center">
-        <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
-      </footer>
+        <footer className="py-20 text-center">
+          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
+        </footer>
     </main>
   );
 }

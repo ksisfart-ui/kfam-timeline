@@ -24,10 +24,10 @@ export default async function Page() {
 
   return (
     <main className="min-h-screen bg-[#fcfaf8] pb-24">
-      <header className="px-8 py-16 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+      <header className="px-8 py-12 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
           <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
-            Koyomi-ke Unofficial Timeline
+            Koyomi-ke Timeline
           </p>
           <div className="flex items-center gap-4">
             <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">

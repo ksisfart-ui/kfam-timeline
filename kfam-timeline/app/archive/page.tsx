@@ -62,7 +62,6 @@ export default function ArchivePage() {
             </div>
           </div>
         ))}
-      </div>
       {/* フッター */}
         <footer className="py-20 text-center">
           <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
