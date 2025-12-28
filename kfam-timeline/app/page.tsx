@@ -1,17 +1,24 @@
-import { fetchArchiveData } from "@/lib/dataFetcher";
+import { fetchArchiveData, fetchNewsData } from "@/lib/dataFetcher";
 import TimelineView from "@/components/TimelineView";
 import Link from "next/link";
+import { Megaphone, Info } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Page() {
   const CSV_URL = process.env.NEXT_PUBLIC_SHEET_URL || "";
-  const allData = await fetchArchiveData(CSV_URL);
+  const NEWS_URL = process.env.NEXT_PUBLIC_NEWS_URL || "";
+  const [allData, newsList] = await Promise.all([
+    fetchArchiveData(CSV_URL),
+    fetchNewsData(NEWS_URL)
+  ]);
   if (!allData.length) return <div className="p-20 text-center">データを読み込んでいます...</div>;
 
   const dateList = Array.from(new Set(allData.map(d => d.日付))).sort().reverse();
-  const latestDate = dateList[0];
+  const latestDate = Array.from(new Set(allData.map(d => d.日付))).sort().reverse()[0];
   const latestData = allData.filter(d => d.日付 === latestDate);
+
+  const updatingDates = Array.from(new Set(allData.filter(d => d.ステータス === "更新中").map(d => d.日付)));
 
   return (
     <main className="min-h-screen bg-[#fcfaf8] pb-24">
@@ -26,7 +33,50 @@ export default async function Page() {
           アーカイブ一覧
         </Link>
       </header>
-      <div className="max-w-7xl mx-auto px-4 lg:px-8">
+
+      {/* ステータス & お知らせエリア */}
+      <div className="max-w-7xl mx-auto px-4 lg:px-8 space-y-6">
+
+        {/* ステータス */}
+        <div className="md:col-span-1 bg-white p-5 rounded-3xl border border-stone-100 shadow-sm flex flex-col justify-center">
+          <div className="flex items-center gap-2 mb-1">
+            <span className={`w-2 h-2 rounded-full ${updatingDates.length > 0 ? 'bg-[#b28c6e] animate-pulse' : 'bg-stone-300'}`} />
+            <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase">System Status</p>
+          </div>
+          <p className="text-sm font-bold text-stone-700">
+            {updatingDates.length > 0 ? `${updatingDates.join(", ")} 更新中` : "全データ観測完了"}
+          </p>
+        {/* お知らせリスト（最新3件表示） */}
+        <div className="md:col-span-2 bg-white p-5 rounded-3xl border border-stone-100 shadow-sm relative overflow-hidden"></div>
+        <div className="flex items-center gap-2 mb-3">
+              <Megaphone className="w-3 h-3 text-[#b28c6e]" />
+              <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase">Recent News</p>
+        </div>
+        <div className="space-y-2">
+          {newsList.slice(0, 3).map((news, i) => (
+            <div key={i} className="flex items-start gap-3 text-xs">
+              <span className="text-stone-300 font-mono shrink-0">{news.日付.replace("2025/", "")}</span>
+              {news.重要度 === "重要" && <span className="bg-red-50 text-red-500 text-[9px] px-1.5 rounded font-bold shrink-0">重要</span>}
+              <p className="text-stone-600 truncate">
+                {news.リンクURL ? (
+                  <a href={news.リンクURL} target="_blank" className="hover:text-[#b28c6e] underline decoration-stone-200 underline-offset-2">{news.内容}</a>
+                ) : (
+                  news.内容
+                )}
+              </p>
+            </div>
+          ))}
+          {newsList.length === 0 && <p className="text-xs text-stone-300">現在、新しいお知らせはありません。</p>}
+        </div>
+        <Link href="/about" className="absolute top-5 right-6 text-stone-300 hover:text-[#b28c6e] transition-colors">
+              <Info className="w-4 h-4" />
+        </Link>
+
+          <Link href="/about" className="bg-stone-100 p-4 rounded-2xl text-xs font-bold text-stone-500 hover:bg-stone-200 transition-all text-center">
+            このサイトについて・利用規約
+          </Link>
+        </div>
+
         <TimelineView data={latestData} />
       </div>
     </main>

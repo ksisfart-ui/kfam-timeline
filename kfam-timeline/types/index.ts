@@ -8,3 +8,8 @@ export interface ArchiveData {
   シーズン: "Season1" | "Season2";
   カテゴリ: string;
 }
+
+export interface NewsData {
+  日付: string;
+  内容: string;
+}

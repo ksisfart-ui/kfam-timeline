@@ -20,6 +20,26 @@ export default async function DateDetailPage(props: {
   // 指定された日付のデータのみを抽出
   const filteredData = allData.filter(d => d.日付 === displayDate);
 
+  // ステータスが「準備中」または「順番待ち」の場合
+  const status = filteredData[0]?.ステータス;
+  const isPending = status === "準備中" || status === "順番待ち";
+
+  // 詳細データ（開始時間や場所）が一切ない場合
+  const hasNoDetails = filteredData.every(d => !d.開始時間 || !d.場所);
+
+  if (isPending || hasNoDetails) {
+    return (
+      <div className="min-h-screen bg-[#fcfaf8] flex flex-col items-center justify-center p-8 text-center">
+        <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center text-2xl mb-6">📡</div>
+        <h1 className="text-2xl font-black text-stone-800 mb-2">{isPending ? status : "観測データ受信中"}</h1>
+        <p className="text-stone-400 text-sm max-w-xs">
+          現在、{displayDate} の観測データを解析しています。表示まで今しばらくお待ちください。
+        </p>
+        <Link href="/archive" className="mt-8 text-[#b28c6e] font-bold text-xs underline">一覧へ戻る</Link>
+      </div>
+    );
+  }
+
   // データが見つからない場合の処理
   if (!filteredData.length) {
     return (
