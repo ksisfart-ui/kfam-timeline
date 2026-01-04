@@ -215,6 +215,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       const start = getPosition(item.開始時間, item.シーズン);
                       const end = getPosition(item.終了時間, item.シーズン);
                       const visualWidth = Math.max(end - start, 1.2);
+                      const colors = getLocationColor(item);
 
                       return (
                         <div
@@ -224,9 +225,10 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                             left: `${start}%`,
                             width: `${visualWidth}%`,
                             top: `12px`, // 常に1段目に配置
-                            backgroundColor: getLocationColor(item),
-                            opacity: 0.9, // 重なりが見えるよう少し透過
-                            color: '#1c1917'
+                            backgroundColor: colors.bg,
+                            borderLeft: `5px solid ${colors.border}`, // 追加：左端のアクセント
+                            color: colors.text,
+                            opacity: 1, // 重なりが見えるよう少し透過
                           }}
                           onClick={() => handleItemClick(item, items)}
                         >
