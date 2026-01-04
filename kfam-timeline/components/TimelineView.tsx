@@ -182,7 +182,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                                           // 修正：同じメンバーの重複アイテムを抽出
                                           onClick={() => handleItemClick(item, memberItems)}
                                         >
-                                          <span className="truncate w-full text-center">{mName}</span>
+                                          <span className="truncate w-full">{mName}</span>
                                         </div>
                                       );
                                     })
@@ -237,7 +237,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                           {/* クリック領域拡張用の透明な擬似要素（左右に4pxずつ判定を広げる） */}
                           <div className="absolute inset-y-0 -left-1 -right-1 z-30" />
 
-                          <span className="truncate font-bold relative z-10 w-full text-center">{item.場所}</span>
+                          <span className="truncate font-bold relative z-10 w-full">{item.場所}</span>
                         </div>
                       );
                     })}
