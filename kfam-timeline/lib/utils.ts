@@ -21,62 +21,63 @@ export const LOCATION_READING_MAP: Record<string, string[]> = {
   "病院": ["びょういん"],
 };
 
-// カテゴリーごとの色定義（背景色、アクセント/ボーダー、文字色）
+// utils.ts
+
 const CATEGORY_PALETTES: Record<string, { bg: string; border: string; text: string }[]> = {
   "警察": [
-    { bg: "#e1e7f0", border: "#4a6a96", text: "#1a2a40" }, // 紺碧系
-    { bg: "#d0d9e8", border: "#385170", text: "#101d2d" },
-    { bg: "#ecf0f5", border: "#7a94b5", text: "#1a2a40" },
+    { bg: "#7a7c7d", border: "#fffffb", text: "#ffffff" }, // 鉛 × 乳白
+    { bg: "#373737", border: "#bbbcde", text: "#ffffff" }, // 墨 × 藤
+    { bg: "#00001c", border: "#e1d1b3", text: "#ffffff" }, // 暗黒 × 亜麻
   ],
   "医療": [
-    { bg: "#f5e6eb", border: "#b56c80", text: "#4a1d28" }, // 苺色系
-    { bg: "#faeff2", border: "#d6a4b1", text: "#4a1d28" },
+    { bg: "#f6f7f8", border: "#f09199", text: "#4a1d28" }, // 月白 × 桃色
+    { bg: "#fdfcfa", border: "#b4cf8f", text: "#1d3323" }, // 卯の花 × 山葵
   ],
   "メカニック": [
-    { bg: "#f5ece1", border: "#b58e6c", text: "#4a321d" }, // 琥珀系
-    { bg: "#faf5ef", border: "#d6bc9f", text: "#4a321d" },
+    { bg: "#f08300", border: "#c26a00", text: "#ffffff" }, // 蜜柑色
+    { bg: "#ed6d46", border: "#c44e2b", text: "#ffffff" }, // 丹
+    { bg: "#f7b977", border: "#d9934a", text: "#4a321d" }, // 杏
+    { bg: "#e0803a", border: "#b35e22", text: "#ffffff" }, // 金木犀
+    { bg: "#f6ad48", border: "#d48d2a", text: "#4a321d" }, // 柑子
   ],
   "飲食店": [
-    { bg: "#e6f0e9", border: "#6c967a", text: "#1d3323" }, // 若草系
-    { bg: "#f0f7f2", border: "#a4c2ae", text: "#1d3323" },
+    { bg: "#19448e", border: "#bbbcde", text: "#ffffff" }, // 瑠璃紺
+    { bg: "#164a84", border: "#bbbcde", text: "#ffffff" }, // 紺瑠璃
+    { bg: "#165e83", border: "#9ec5cf", text: "#ffffff" }, // 藍色
+    { bg: "#0f2350", border: "#bbbcde", text: "#ffffff" }, // 濃藍
+    { bg: "#213d5d", border: "#9ec5cf", text: "#ffffff" }, // 瞑
+    { bg: "#00669f", border: "#9ec5cf", text: "#ffffff" }, // 孔雀青
   ],
   "自宅": [
-    { bg: "#eee", border: "#999", text: "#333" }, // 鼠色系
-    { bg: "#f5f5f5", border: "#bbb", text: "#333" },
+    { bg: "#b28c6e", border: "#8c6a4d", text: "#ffffff" }, // 柴染
   ],
   "住民の家": [
-    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
-    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+    { bg: "#e9e4e1", border: "#b2aaa4", text: "#5d534a" }, // 灰がかった茶（仮）
   ],
   "免許センター": [
-    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
-    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+    { bg: "#ede4cd", border: "#c9b98e", text: "#4a4434" }, // 練色
   ],
   "E5ミッション": [
-    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
-    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+    { bg: "#edd3a1", border: "#cca766", text: "#4a3d24" }, // 浅黄
   ],
   "不動産": [
-    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
-    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+    { bg: "#716246", border: "#4a3f2d", text: "#ffffff" }, // 媚茶
   ],
   "金融": [
-    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
-    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+    { bg: "#e6b422", border: "#b38b1a", text: "#ffffff" }, // 金色
   ],
   "その他": [
-    { bg: "#f0f0f0", border: "#ccc", text: "#666" },
+    { bg: "#dcdddd", border: "#abb1b1", text: "#4a4a4a" }, // 白鼠
   ]
 };
 
 export function getLocationColor(item: any): { bg: string; border: string; text: string } {
-  const category = item.カテゴリ || "その他";
+  // スプレッドシートの「カテゴリー」列の値を使用
+  const category = item.カテゴリー || "その他";
   const placeName = item.場所 || "";
   
-  // カテゴリーが存在しない場合は「その他」を使用
   const palettes = CATEGORY_PALETTES[category] || CATEGORY_PALETTES["その他"];
 
-  // 場所名のハッシュ値でパレット内のインデックスを選択（同じ場所は常に同じ色になる）
   let hash = 0;
   for (let i = 0; i < placeName.length; i++) {
     hash = placeName.charCodeAt(i) + ((hash << 5) - hash);
