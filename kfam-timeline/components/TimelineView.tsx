@@ -177,12 +177,12 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                                       return (
                                         <div
                                           key={`${lIdx}-${i}`}
-                                          className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[9px] font-bold text-white transition-all hover:scale-[1.02] z-20"
+                                          className="absolute h-9 rounded-md shadow-sm border border-black/5 cursor-pointer flex items-center px-2 text-[10px] font-bold text-white transition-all hover:scale-[1.02] z-20"
                                           style={{ left: `${start}%`, width: `${Math.max(end - start, 1.2)}%`, top: `${lIdx * 44 + 6}px`, backgroundColor: MEMBER_COLORS[item.暦家] || '#666' }}
                                           // 修正：同じメンバーの重複アイテムを抽出
                                           onClick={() => handleItemClick(item, memberItems)}
                                         >
-                                          {Math.max(end - start, 1.2) > 3 && <span className="truncate">{mName}</span>}
+                                          {Math.max(end - start, 1.2) > 1.2 && <span className="truncate">{mName}</span>}
                                         </div>
                                       );
                                     })
@@ -237,7 +237,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                           {/* クリック領域拡張用の透明な擬似要素（左右に4pxずつ判定を広げる） */}
                           <div className="absolute inset-y-0 -left-1 -right-1 z-30" />
 
-                          {visualWidth > 4 && <span className="truncate font-bold relative z-10">{item.場所}</span>}
+                          {visualWidth > 1.2 && <span className="truncate font-bold relative z-10">{item.場所}</span>}
                         </div>
                       );
                     })}

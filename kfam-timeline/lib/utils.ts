@@ -50,6 +50,7 @@ const CATEGORY_PALETTES: Record<string, { bg: string; border: string; text: stri
   ],
   "自宅": [
     { bg: "#b28c6e", border: "#8c6a4d", text: "#ffffff" }, // 柴染
+    { bg: "#a58f86", border: "#432f2f", text: "#ffffff" }, // 胡桃染
   ],
   "住民の家": [
     { bg: "#e9e4e1", border: "#b2aaa4", text: "#5d534a" }, // 灰がかった茶（仮）
