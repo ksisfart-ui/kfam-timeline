@@ -56,15 +56,6 @@ export function getLocationColor(item: any): { bg: string; border: string; text:
   };
 }
 
-  let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = text.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  
-  const index = Math.abs(hash) % palette.length;
-  return palette[index];
-}
-
 // 4. アーカイブの年月グループ化
 export function groupDatesByMonth(dates: string[]) {
   return dates.reduce((acc, date) => {
