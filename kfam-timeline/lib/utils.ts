@@ -21,39 +21,69 @@ export const LOCATION_READING_MAP: Record<string, string[]> = {
   "病院": ["びょういん"],
 };
 
+// カテゴリーごとの色定義（背景色、アクセント/ボーダー、文字色）
+const CATEGORY_PALETTES: Record<string, { bg: string; border: string; text: string }[]> = {
+  "警察": [
+    { bg: "#e1e7f0", border: "#4a6a96", text: "#1a2a40" }, // 紺碧系
+    { bg: "#d0d9e8", border: "#385170", text: "#101d2d" },
+    { bg: "#ecf0f5", border: "#7a94b5", text: "#1a2a40" },
+  ],
+  "医療": [
+    { bg: "#f5e6eb", border: "#b56c80", text: "#4a1d28" }, // 苺色系
+    { bg: "#faeff2", border: "#d6a4b1", text: "#4a1d28" },
+  ],
+  "メカニック": [
+    { bg: "#f5ece1", border: "#b58e6c", text: "#4a321d" }, // 琥珀系
+    { bg: "#faf5ef", border: "#d6bc9f", text: "#4a321d" },
+  ],
+  "飲食店": [
+    { bg: "#e6f0e9", border: "#6c967a", text: "#1d3323" }, // 若草系
+    { bg: "#f0f7f2", border: "#a4c2ae", text: "#1d3323" },
+  ],
+  "自宅": [
+    { bg: "#eee", border: "#999", text: "#333" }, // 鼠色系
+    { bg: "#f5f5f5", border: "#bbb", text: "#333" },
+  ],
+  "住民の家": [
+    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
+    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+  ],
+  "免許センター": [
+    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
+    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+  ],
+  "E5ミッション": [
+    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
+    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+  ],
+  "不動産": [
+    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
+    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+  ],
+  "金融": [
+    { bg: "#e9e1f0", border: "#836c96", text: "#2e1d4a" }, // 菖蒲系
+    { bg: "#f2eff7", border: "#b5a4d6", text: "#2e1d4a" },
+  ],
+  "その他": [
+    { bg: "#f0f0f0", border: "#ccc", text: "#666" },
+  ]
+};
+
 export function getLocationColor(item: any): { bg: string; border: string; text: string } {
-  const text = item.場所 || "";
-  if (!text) return { bg: "#f8f9fa", border: "#dee2e6", text: "#495057" };
+  const category = item.カテゴリー || "その他";
+  const placeName = item.場所 || "";
+  
+  // カテゴリーが存在しない場合は「その他」を使用
+  const palettes = CATEGORY_PALETTES[category] || CATEGORY_PALETTES["その他"];
 
-  // 和モダンパレット（背景用の淡い色 ＋ アクセント用の濃い色）
-  const palette = [
-    { name: "灰桜", bg: "#f4e0e0", border: "#d9a0a0" },
-    { name: "瓶覗", bg: "#e0f0f4", border: "#9ec5cf" },
-    { name: "白緑", bg: "#e0f4e4", border: "#a0cfab" },
-    { name: "藤鼠", bg: "#e9e0f4", border: "#b2a0cf" },
-    { name: "練色", bg: "#f4f0e0", border: "#cfc5a0" },
-    { name: "水浅葱", bg: "#e0f4ef", border: "#a0cfc2" },
-    { name: "薄柿", bg: "#f4e7e0", border: "#cfada0" },
-    { name: "青磁色", bg: "#e7f4f0", border: "#a0cfc5" },
-    { name: "淡萌黄", bg: "#f0f4e0", border: "#bccf12" }, // 少し明度調整
-    { name: "薄群青", bg: "#e0e7f4", border: "#a0b2cf" },
-    { name: "灰紅梅", bg: "#f4e0e9", border: "#cfa0b7" },
-    { name: "千草色", bg: "#e0f4f4", border: "#a0cfcf" },
-  ];
-
+  // 場所名のハッシュ値でパレット内のインデックスを選択（同じ場所は常に同じ色になる）
   let hash = 0;
-  for (let i = 0; i < text.length; i++) {
-    hash = text.charCodeAt(i) + ((hash << 5) - hash);
+  for (let i = 0; i < placeName.length; i++) {
+    hash = placeName.charCodeAt(i) + ((hash << 5) - hash);
   }
   
-  const index = Math.abs(hash) % palette.length;
-  const color = palette[index];
-
-  return {
-    bg: color.bg,
-    border: color.border,
-    text: "#2d3436" // 文字色は共通の濃いグレーで視認性確保
-  };
+  const index = Math.abs(hash) % palettes.length;
+  return palettes[index];
 }
 
 // 4. アーカイブの年月グループ化

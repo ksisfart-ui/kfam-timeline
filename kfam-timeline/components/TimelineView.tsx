@@ -226,7 +226,9 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                             width: `${visualWidth}%`,
                             top: `12px`, // 常に1段目に配置
                             backgroundColor: colors.bg,
-                            borderLeft: `5px solid ${colors.border}`, // 追加：左端のアクセント
+                            borderColor: colors.border,
+                            borderWidth: '1px',
+                            borderLeftWidth: '3px',
                             color: colors.text,
                             opacity: 1, // 重なりが見えるよう少し透過
                           }}
