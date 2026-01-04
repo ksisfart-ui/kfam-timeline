@@ -123,7 +123,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
               ))}
             </div>
             <div className="flex border-b border-stone-100 bg-stone-50/50 sticky top-0 z-30">
-              <div className="w-32 flex-shrink-0 border-r border-stone-200 p-4 text-[10px] font-bold text-stone-400 sticky left-0 bg-stone-50 z-20">名前/場所</div>
+              <div className="w-32 flex-shrink-0 border-r border-stone-200 p-4 text-[10px] font-bold text-stone-400 sticky left-0 bg-stone-50 z-40">名前/場所</div>
               <div className="flex-grow flex">
                 {timeLabels.map((label, i) => (
                   <div key={i} className="flex-grow text-[10px] text-stone-400 p-4 border-l border-stone-100/30 text-center font-mono">{label}</div>
@@ -163,7 +163,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                             return (
                               <div key={mName} className="flex border-b border-stone-50 last:border-b-0 items-stretch relative">
                                 <TimeGrid />
-                                <div className="w-32 flex-shrink-0 px-4 py-3 flex items-center border-r border-stone-100 bg-white/50 sticky left-0 z-10">
+                                <div className="w-32 flex-shrink-0 px-4 py-3 flex items-center border-r border-stone-100 bg-white sticky left-0 z-30">
                                   <div className="flex items-center gap-2">
                                     <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[mName] || '#ccc' }} />
                                     <span className="text-[11px] font-bold text-stone-600 truncate">{mName}</span>
@@ -202,7 +202,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
               return (
                 <div key={key} className="flex border-b border-stone-100 items-stretch hover:bg-stone-50/20 transition-colors relative">
                   <TimeGrid />
-                  <div className="w-32 flex-shrink-0 px-4 py-6 flex items-center border-r border-stone-200 sticky left-0 z-10 bg-white">
+                  <div className="w-32 flex-shrink-0 px-4 py-6 flex items-center border-r border-stone-200 sticky left-0 z-30 bg-white">
                     <div className="text-sm font-bold text-stone-700 flex items-center gap-2">
                       <div className="w-1.5 h-3 rounded-full" style={{ backgroundColor: MEMBER_COLORS[key] || '#ccc' }} />
                       <span className="truncate">{key}</span>
