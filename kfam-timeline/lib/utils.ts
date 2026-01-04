@@ -70,7 +70,7 @@ const CATEGORY_PALETTES: Record<string, { bg: string; border: string; text: stri
 };
 
 export function getLocationColor(item: any): { bg: string; border: string; text: string } {
-  const category = item.カテゴリー || "その他";
+  const category = item.カテゴリ || "その他";
   const placeName = item.場所 || "";
   
   // カテゴリーが存在しない場合は「その他」を使用
