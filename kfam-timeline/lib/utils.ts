@@ -73,7 +73,7 @@ const CATEGORY_PALETTES: Record<string, { bg: string; border: string; text: stri
 
 export function getLocationColor(item: any): { bg: string; border: string; text: string } {
   // スプレッドシートの「カテゴリー」列の値を使用
-  const category = item.カテゴリー || "その他";
+  const category = item.カテゴリ || "その他";
   const placeName = item.場所 || "";
   
   const palettes = CATEGORY_PALETTES[category] || CATEGORY_PALETTES["その他"];
