@@ -21,20 +21,30 @@ export const LOCATION_READING_MAP: Record<string, string[]> = {
   "病院": ["びょういん"],
 };
 
-// 3. スタイリッシュなランダム色の生成
 export function getLocationColor(item: any): string {
   const text = item.場所 || "";
+  if (!text) return "#f0f0f0"; // デフォルト色
+
+  // 和のパレット（くすみパステル）
+  const palette = [
+    "#e2e8f0", // 灰青 (Ash Blue)
+    "#d1d8e0", // 鼠色
+    "#e9d8d6", // 灰桜 (Dusty Rose)
+    "#d8e4d8", // 白緑 (Pale Green)
+    "#e5e1d5", // 鳥の子色 (Beige)
+    "#d9e3f1", // 水色
+    "#e8dff5", // 藤色
+    "#fce1e4", // 桃花色
+    "#fcf4dd", // 象牙色
+  ];
+
   let hash = 0;
   for (let i = 0; i < text.length; i++) {
     hash = text.charCodeAt(i) + ((hash << 5) - hash);
   }
-
-  // ハッシュから彩度と明度も少しだけ変動させる
-  const h = Math.abs(hash) % 360;
-  const s = 30 + (Math.abs(hash >> 8) % 15); // 30%〜45% (くすみ感)
-  const l = 82 + (Math.abs(hash >> 16) % 8);  // 82%〜90% (明るめ)
-
-  return `hsl(${h}, ${s}%, ${l}%)`;
+  
+  const index = Math.abs(hash) % palette.length;
+  return palette[index];
 }
 
 // 4. アーカイブの年月グループ化
