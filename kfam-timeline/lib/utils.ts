@@ -15,28 +15,46 @@ export const LOCATION_READING_MAP: Record<string, string[]> = {
   "東署": ["ひがししょ", "けいさつ"],
   "本署": ["ほんしょ", "けいさつ"],
   "ボイラ宅": ["ぼいらたく"],
-  "海上レストラン": ["海上レストラン", "うらしま", "urashima", "Urashima"],
+  "海上レストラン": ["かいじょうれすとらん", "うらしま", "urashima", "Urashima"],
   "FOWK": ["ふぉーく", "fowk"],
   "教習所": ["きょうしゅうじょ", "めんきょ"],
   "病院": ["びょういん"],
 };
 
-export function getLocationColor(item: any): string {
+export function getLocationColor(item: any): { bg: string; border: string; text: string } {
   const text = item.場所 || "";
-  if (!text) return "#f0f0f0"; // デフォルト色
+  if (!text) return { bg: "#f8f9fa", border: "#dee2e6", text: "#495057" };
 
-  // 和のパレット（くすみパステル）
+  // 和モダンパレット（背景用の淡い色 ＋ アクセント用の濃い色）
   const palette = [
-    "#e2e8f0", // 灰青 (Ash Blue)
-    "#d1d8e0", // 鼠色
-    "#e9d8d6", // 灰桜 (Dusty Rose)
-    "#d8e4d8", // 白緑 (Pale Green)
-    "#e5e1d5", // 鳥の子色 (Beige)
-    "#d9e3f1", // 水色
-    "#e8dff5", // 藤色
-    "#fce1e4", // 桃花色
-    "#fcf4dd", // 象牙色
+    { name: "灰桜", bg: "#f4e0e0", border: "#d9a0a0" },
+    { name: "瓶覗", bg: "#e0f0f4", border: "#9ec5cf" },
+    { name: "白緑", bg: "#e0f4e4", border: "#a0cfab" },
+    { name: "藤鼠", bg: "#e9e0f4", border: "#b2a0cf" },
+    { name: "練色", bg: "#f4f0e0", border: "#cfc5a0" },
+    { name: "水浅葱", bg: "#e0f4ef", border: "#a0cfc2" },
+    { name: "薄柿", bg: "#f4e7e0", border: "#cfada0" },
+    { name: "青磁色", bg: "#e7f4f0", border: "#a0cfc5" },
+    { name: "淡萌黄", bg: "#f0f4e0", border: "#bccf12" }, // 少し明度調整
+    { name: "薄群青", bg: "#e0e7f4", border: "#a0b2cf" },
+    { name: "灰紅梅", bg: "#f4e0e9", border: "#cfa0b7" },
+    { name: "千草色", bg: "#e0f4f4", border: "#a0cfcf" },
   ];
+
+  let hash = 0;
+  for (let i = 0; i < text.length; i++) {
+    hash = text.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  
+  const index = Math.abs(hash) % palette.length;
+  const color = palette[index];
+
+  return {
+    bg: color.bg,
+    border: color.border,
+    text: "#2d3436" // 文字色は共通の濃いグレーで視認性確保
+  };
+}
 
   let hash = 0;
   for (let i = 0; i < text.length; i++) {
