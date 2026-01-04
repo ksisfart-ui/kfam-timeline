@@ -28,9 +28,13 @@ export function getLocationColor(item: any): string {
   for (let i = 0; i < text.length; i++) {
     hash = text.charCodeAt(i) + ((hash << 5) - hash);
   }
+
+  // ハッシュから彩度と明度も少しだけ変動させる
   const h = Math.abs(hash) % 360;
-  // 彩度と明度を固定して「和」のパステル調に
-  return `hsl(${h}, 60%, 85%)`;
+  const s = 30 + (Math.abs(hash >> 8) % 15); // 30%〜45% (くすみ感)
+  const l = 82 + (Math.abs(hash >> 16) % 8);  // 82%〜90% (明るめ)
+
+  return `hsl(${h}, ${s}%, ${l}%)`;
 }
 
 // 4. アーカイブの年月グループ化
