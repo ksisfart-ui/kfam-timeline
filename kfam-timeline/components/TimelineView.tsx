@@ -105,7 +105,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
               <button onClick={() => setViewMode("member")} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === "member" ? "bg-white text-stone-800 shadow-sm" : "text-stone-400 hover:text-stone-600"}`}>姉妹軸</button>
               <button onClick={() => setViewMode("location")} className={`px-4 py-2 rounded-lg text-xs font-bold transition-all ${viewMode === "location" ? "bg-white text-stone-800 shadow-sm" : "text-stone-400 hover:text-stone-600"}`}>場所軸</button>
             </div>
-            <div className="hidden md:flex items-center bg-stone-100 p-1 rounded-xl border border-stone-200">
+            <div className="flex items-center bg-stone-100 p-1 rounded-xl border border-stone-200">
               <button onClick={() => setZoom(Math.max(1, zoom - 0.5))} className="p-2 hover:bg-white rounded-lg transition-all"><ZoomOut className="w-4 h-4 text-stone-600" /></button>
               <span className="text-[10px] font-bold w-10 text-center text-stone-600">{Math.round(zoom * 100)}%</span>
               <button onClick={() => setZoom(Math.min(3, zoom + 0.5))} className="p-2 hover:bg-white rounded-lg transition-all"><ZoomIn className="w-4 h-4 text-stone-600" /></button>
@@ -116,7 +116,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
 
       <div className="bg-white rounded-3xl shadow-xl border border-stone-200 overflow-hidden">
         <div className="overflow-x-auto overflow-y-visible">
-          <div style={{ width: `${zoom * 100}%`, minWidth: '1000px' }} className="relative transition-all duration-300">
+          <div style={{ width: `${zoom * 100}%`, minWidth: `${zoom * 1000}px` }} className="relative transition-all duration-300">
             <div className="absolute inset-0 flex pointer-events-none z-0">
               {timeLabels.map((_, i) => (
                 <div key={i} className="flex-grow border-l border-stone-200/40 first:border-l-0" />
@@ -300,11 +300,11 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       rel="noopener noreferrer" 
                       className="flex items-center justify-center gap-2 w-full py-4 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30 transition-transform active:scale-95"
                     >
-                      視聴ページへ移動 <ExternalLink className="w-4 h-4" />
+                      観測する <ExternalLink className="w-4 h-4" />
                     </a>
                   ) : (
                     <div className="flex items-center justify-center gap-2 w-full py-4 bg-stone-100 text-stone-400 rounded-2xl font-bold text-sm border border-stone-200 cursor-not-allowed">
-                      観測データがありません
+                      衛星データ未受信
                     </div>
                   )}
                 </div>
