@@ -293,10 +293,19 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                     </div>
                   </div>
                   
-                  {item.URL && (
-                    <a href={item.URL} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 w-full py-4 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30 transition-transform active:scale-95">
+                  {item.URL ? (
+                    <a 
+                      href={item.URL} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="flex items-center justify-center gap-2 w-full py-4 bg-[#b28c6e] text-white rounded-2xl font-bold text-sm shadow-xl shadow-[#b28c6e]/30 transition-transform active:scale-95"
+                    >
                       視聴ページへ移動 <ExternalLink className="w-4 h-4" />
                     </a>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2 w-full py-4 bg-stone-100 text-stone-400 rounded-2xl font-bold text-sm border border-stone-200 cursor-not-allowed">
+                      観測データがありません
+                    </div>
                   )}
                 </div>
               ))}
