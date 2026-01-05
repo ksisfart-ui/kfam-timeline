@@ -41,12 +41,12 @@ export default async function Page() {
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
-          <Link href="/about" className="flex items-center gap-2 px-4 py-2 text-stone-500 hover:text-[#b28c6e] transition-colors border border-stone-100 bg-white/50 rounded-xl">
-            <Info className="w-4 h-4" />
-            <span className="text-[11px] font-black tracking-widest uppercase">このサイトについて</span>
+        <div className="flex items-stretch gap-3 w-full md:w-auto">
+          <Link href="/about" className="flex-1 flex items-center justify-center gap-2 px-2 py-3 text-stone-500 hover:text-[#b28c6e] transition-colors border border-stone-100 bg-white/50 rounded-xl">
+            <Info className="w-4 h-4 shrink-0" />
+            <span className="text-[10px] sm:text-[11px] font-black tracking-widest uppercase whitespace-nowrap">このサイトについて</span>
           </Link>
-          <Link href="/archive" className="px-10 py-4 bg-stone-800 text-white rounded-2xl text-[11px] font-black tracking-widest uppercase shadow-xl shadow-stone-200 hover:bg-stone-700 transition-all">
+          <Link href="/archive" className="flex-1 flex items-center justify-center px-2 py-3 bg-stone-800 text-white rounded-xl text-[10px] sm:text-[11px] font-black tracking-widest uppercase shadow-lg shadow-stone-200 hover:bg-stone-700 transition-all whitespace-nowrap">
             過去の記録を見る
           </Link>
         </div>
