@@ -44,7 +44,7 @@ export function getLocationColor(item: any): { bg: string; border: string; text:
     hash = placeName.charCodeAt(i) + ((hash << 5) - hash);
   }
   
-  const index = Math.abs(hash) % palettes.length;
+  let index = Math.abs(hash) % palettes.length;
 
   // 3. 同じカテゴリ内で他の場所がすでにそのインデックスを使っていないかチェック
   // すべて使われている場合は、ハッシュに基づいた元のインデックスを受け入れる（衝突回避の限界）
