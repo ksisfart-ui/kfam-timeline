@@ -270,9 +270,11 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                   {/* 区切り線（2番目以降） */}
                   {idx !== 0 && <div className="absolute -top-5 left-0 right-0 border-t border-stone-100" />}
                   
-                  <div className="mb-6">
-                    <h2 className="text-3xl font-bold text-stone-800 tracking-tight">{item.暦家}</h2>
-                  </div>
+                  {idx === 0 && (
+                    <div className="mb-6">
+                      <h2 className="text-3xl font-bold text-stone-800 tracking-tight">{item.暦家}</h2>
+                    </div>
+                  )}
                   
                   <div className="space-y-4 mb-6 text-stone-700">
                     <div className="flex items-center gap-4 bg-stone-50 p-4 rounded-2xl">
