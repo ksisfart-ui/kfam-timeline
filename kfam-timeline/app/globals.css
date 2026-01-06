@@ -1,58 +1,69 @@
-/* globals.css */
+/* globals.css - Tailwind CSS v4 対応版 */
 @import "tailwindcss";
 
-  :root {
-    /* ライトモード用カラー */
-    --background: #fcfaf8;
-    --card-bg: #ffffff;
-    --card-border: rgba(120, 113, 108, 0.1);
-    --text-main: #292524;    /* stone-800 */
-    --text-sub: #78716c;     /* stone-500 */
-    --text-muted: #d6d3d1;   /* stone-300 */
-    --accent: #b28c6e;
-    --accent-soft: rgba(178, 140, 110, 0.1);
+:root {
+  /* ライトモード: 画像2枚目のオリジナルカラーを再現 */
+  --background: #fcfaf8;
+  --card-bg: #ffffff;
+  --card-border: rgba(120, 113, 108, 0.1);
+  --text-main: #292524;    /* stone-800: メインの文字色 */
+  --text-sub: #78716c;     /* stone-500: 補足テキスト */
+  --text-muted: #d6d3d1;   /* stone-300: 日付など */
+  --accent: #b28c6e;       /* Koyomi-ke ブラウン */
+  --accent-soft: rgba(178, 140, 110, 0.1);
 
-    --status-pending-bg: #fffbeb;    /* amber-50 */
-    --status-pending-text: #d97706;  /* amber-600 */
-    --status-pending-border: #fef3c7;/* amber-100 */
-    --status-urgent-bg: #fef2f2;     /* red-50 */
-    --status-urgent-text: #ef4444;   /* red-500 */
-    --btn-primary-bg: #292524;       /* stone-800 */
-    --btn-primary-text: #ffffff;
-  }
+  --status-pending-bg: #fffbeb;
+  --status-pending-text: #d97706;
+  --status-pending-border: #fef3c7;
+  --status-urgent-bg: #fef2f2;
+  --status-urgent-text: #ef4444;
+  --btn-primary-bg: #292524;
+  --btn-primary-text: #ffffff;
+}
 
-  /* next-themesはデフォルトで 'dark' クラスをhtml要素に付与します */
-  .dark {
-    --background: #1c1917;   /* stone-900 */
-    --card-bg: #292524;      /* stone-800 */
-    --card-border: rgba(120, 113, 108, 0.2);
-    --text-main: #f5f5f4;    /* stone-100 */
-    --text-sub: #a8a29e;     /* stone-400 */
-    --text-muted: #57534e;   /* stone-600 */
-    --accent: #d4a373;
-    --accent-soft: rgba(212, 163, 115, 0.15);
+.dark {
+  /* ダークモード: 視認性を確保した Stone トーン */
+  --background: #1c1917;   /* stone-900 */
+  --card-bg: #292524;      /* stone-800 */
+  --card-border: rgba(120, 113, 108, 0.2);
+  --text-main: #f5f5f4;    /* stone-100 */
+  --text-sub: #a8a29e;     /* stone-400 */
+  --text-muted: #57534e;   /* stone-600 */
+  --accent: #d4a373;
+  --accent-soft: rgba(212, 163, 115, 0.15);
 
-    --status-pending-bg: rgba(217, 119, 6, 0.1);
-    --status-pending-text: #fbbf24;
-    --status-pending-border: rgba(217, 119, 6, 0.2);
-    --status-urgent-bg: rgba(239, 68, 68, 0.1);
-    --status-urgent-text: #f87171;
-    --btn-primary-bg: #f5f5f4;       /* stone-100 (反転) */
-    --btn-primary-text: #1c1917;     /* stone-900 (反転) */
-  }
+  --status-pending-bg: rgba(217, 119, 6, 0.1);
+  --status-pending-text: #fbbf24;
+  --status-pending-border: rgba(217, 119, 6, 0.2);
+  --status-urgent-bg: rgba(239, 68, 68, 0.1);
+  --status-urgent-text: #f87171;
+  --btn-primary-bg: #f5f5f4;
+  --btn-primary-text: #1c1917;
+}
 
-  @theme inline {
+@theme {
+  /* クラス名として使いたい名前を定義（text-main, bg-card など） */
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --color-card: var(--card-bg);
   --color-card-border: var(--card-border);
-  --color-text-main: var(--text-main);
-  --color-text-sub: var(--text-sub);
+  --color-main: var(--text-main);
+  --color-sub: var(--text-sub);
+  --color-muted: var(--text-muted);
   --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-status-pending-bg: var(--status-pending-bg);
+  --color-status-pending-text: var(--status-pending-text);
+  --color-status-pending-border: var(--status-pending-border);
+  --color-status-urgent-bg: var(--status-urgent-bg);
+  --color-status-urgent-text: var(--status-urgent-text);
+  
+  --color-btn-primary-bg: var(--btn-primary-bg);
+  --color-btn-primary-text: var(--btn-primary-text);
 }
 
 body {
   background-color: var(--background);
-  color: var(--foreground);
+  color: var(--text-main); /* 定義済みのメイン文字色を適用 */
   transition: background-color 0.3s, color 0.3s;
 }
