@@ -1,26 +1,50 @@
-@import "tailwindcss";
+/* globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+    /* ライトモード用カラー */
+    --background: #fcfaf8;
+    --card-bg: #ffffff;
+    --card-border: rgba(120, 113, 108, 0.1);
+    --text-main: #292524;    /* stone-800 */
+    --text-sub: #78716c;     /* stone-500 */
+    --text-muted: #d6d3d1;   /* stone-300 */
+    --accent: #b28c6e;
+    --accent-soft: rgba(178, 140, 110, 0.1);
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    --status-pending-bg: #fffbeb;    /* amber-50 */
+    --status-pending-text: #d97706;  /* amber-600 */
+    --status-pending-border: #fef3c7;/* amber-100 */
+    --status-urgent-bg: #fef2f2;     /* red-50 */
+    --status-urgent-text: #ef4444;   /* red-500 */
+    --btn-primary-bg: #292524;       /* stone-800 */
+    --btn-primary-text: #ffffff;
+  }
+
+  /* next-themesはデフォルトで 'dark' クラスをhtml要素に付与します */
+  .dark {
+    --background: #1c1917;   /* stone-900 */
+    --card-bg: #292524;      /* stone-800 */
+    --card-border: rgba(120, 113, 108, 0.2);
+    --text-main: #f5f5f4;    /* stone-100 */
+    --text-sub: #a8a29e;     /* stone-400 */
+    --text-muted: #57534e;   /* stone-600 */
+    --accent: #d4a373;
+    --accent-soft: rgba(212, 163, 115, 0.15);
+
+    --status-pending-bg: rgba(217, 119, 6, 0.1);
+    --status-pending-text: #fbbf24;
+    --status-pending-border: rgba(217, 119, 6, 0.2);
+    --status-urgent-bg: rgba(239, 68, 68, 0.1);
+    --status-urgent-text: #f87171;
+    --btn-primary-bg: #f5f5f4;       /* stone-100 (反転) */
+    --btn-primary-text: #1c1917;     /* stone-900 (反転) */
+  }
+
+  body {
+    @apply bg-[var(--background)] text-[var(--text-main)] transition-colors duration-300;
+  }
 }

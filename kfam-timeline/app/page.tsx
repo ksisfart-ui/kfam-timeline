@@ -2,6 +2,7 @@ import { fetchArchiveData, fetchNewsData } from "@/lib/dataFetcher";
 import TimelineView from "@/components/TimelineView";
 import Link from "next/link";
 import { Megaphone, Info } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export const dynamic = 'force-dynamic';
 
@@ -12,7 +13,7 @@ export default async function Page() {
     fetchArchiveData(CSV_URL),
     fetchNewsData(NEWS_URL)
   ]);
-  if (!allData.length) return <div className="p-20 text-center">データを読み込んでいます...</div>;
+  if (!allData.length) return <div className="p-20 text-center bg-background text-main">データを読み込んでいます...</div>;
 
   const latestDate = Array.from(new Set(allData.map(d => d.日付))).sort().reverse()[0];
   const latestData = allData.filter(d => d.日付 === latestDate);
@@ -23,18 +24,18 @@ export default async function Page() {
   const isLatestPreparing = latestData.some(d => d.ステータス === "準備中");
 
   return (
-    <main className="min-h-screen bg-[#fcfaf8] pb-24">
+    <main className="min-h-screen bg-background text-main pb-24 transition-colors duration-300">
       <header className="px-8 py-12 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
         <div className="space-y-2">
-          <p className="text-[#b28c6e] text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
+          <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
             Koyomi-ke Timeline
           </p>
           <div className="flex items-center gap-4">
             <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
-              最新の記録 <span className="text-stone-300 font-light ml-2">{latestDate}</span>
+              最新の記録 <span className="text-muted font-light ml-2">{latestDate}</span>
             </h1>
             {isLatestPreparing && (
-              <span className="px-3 py-1 bg-amber-50 text-amber-600 border border-amber-100 text-[10px] font-bold rounded-full">
+              <span className="px-3 py-1 bg-status-pending-bg text-status-pending-text border border-status-pending-border text-[10px] font-bold rounded-full">
                 準備中
               </span>
             )}
@@ -42,27 +43,30 @@ export default async function Page() {
         </div>
 
         <div className="flex items-stretch gap-3 w-full md:w-auto">
-          <Link href="/about" className="flex-1 flex items-center justify-center gap-2 px-2 py-3 text-stone-500 hover:text-[#b28c6e] transition-colors border border-stone-100 bg-white/50 rounded-xl">
-            <Info className="w-4 h-4 shrink-0" />
-            <span className="text-[10px] sm:text-[11px] font-black tracking-widest uppercase whitespace-nowrap">このサイトについて</span>
-          </Link>
-          <Link href="/archive" className="flex-1 flex items-center justify-center px-2 py-3 bg-stone-800 text-white rounded-xl text-[10px] sm:text-[11px] font-black tracking-widest uppercase shadow-lg shadow-stone-200 hover:bg-stone-700 transition-all whitespace-nowrap">
-            過去の記録を見る
-          </Link>
+          <ThemeToggle />
+          <div className="flex items-stretch gap-3 flex-1 md:flex-none">
+            <Link href="/about" className="flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sub hover:text-accent transition-colors border border-card-border bg-card/50 rounded-xl">
+              <Info className="w-4 h-4 shrink-0" />
+              <span className="text-[10px] sm:text-[11px] font-black tracking-widest uppercase whitespace-nowrap">このサイトについて</span>
+            </Link>
+            <Link href="/archive" className="flex-1 flex items-center justify-center px-4 py-3 bg-btn-primary-bg text-btn-primary-text rounded-xl text-[10px] sm:text-[11px] font-black tracking-widest uppercase shadow-lg shadow-card-border hover:opacity-90 transition-all whitespace-nowrap">
+              過去の記録を見る
+            </Link>
+          </div>
         </div>
       </header>
 
       {/* ステータス & お知らせエリア */}
       <div className="max-w-7xl mx-auto px-4 lg:px-8 space-y-6">
-        <div className="bg-white p-8 rounded-[40px] border border-stone-100 shadow-sm space-y-10">
+        <div className="bg-card p-8 rounded-[40px] border border-card-border shadow-sm space-y-10">
           
           {/* SYSTEM STATUS */}
           <section>
             <div className="flex items-center gap-2 mb-3">
-              <span className={`w-2 h-2 rounded-full ${updatingDates.length > 0 ? 'bg-[#b28c6e]' : 'bg-stone-300'}`} />
-              <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase">System Status</p>
+              <span className={`w-2 h-2 rounded-full ${updatingDates.length > 0 ? 'bg-accent' : 'bg-muted'}`} />
+              <p className="text-[10px] font-bold text-sub tracking-widest uppercase">System Status</p>
             </div>
-            <p className="text-sm font-bold text-stone-700 ml-4">
+            <p className="text-sm font-bold ml-4">
               {updatingDates.length > 0 ? `${updatingDates.join(", ")} 更新中` : "全データ観測完了"}
             </p>
           </section>
@@ -70,24 +74,24 @@ export default async function Page() {
           {/* RECENT NEWS（間隔を空け、謎の空divを削除） */}
           <section>
             <div className="flex items-center gap-2 mb-4">
-              <Megaphone className="w-3 h-3 text-[#b28c6e]" />
-              <p className="text-[10px] font-bold text-stone-400 tracking-widest uppercase">Recent News</p>
+              <Megaphone className="w-3 h-3 text-accent" />
+              <p className="text-[10px] font-bold text-sub tracking-widest uppercase">Recent News</p>
             </div>
             <div className="space-y-3 ml-4">
               {newsList.slice(0, 3).map((news, i) => (
                 <div key={i} className="flex items-start gap-3 text-xs">
-                  <span className="text-stone-300 font-mono shrink-0">{news.日付.replace("2025/", "")}</span>
-                  {news.重要度 === "重要" && <span className="bg-red-50 text-red-500 text-[9px] px-1.5 rounded font-bold shrink-0">重要</span>}
-                  <p className="text-stone-600 truncate">
+                  <span className="text-muted font-mono shrink-0">{news.日付.replace("2025/", "")}</span>
+                  {news.重要度 === "重要" && <span className="bg-status-urgent-bg text-status-urgent-text text-[9px] px-1.5 rounded font-bold shrink-0">重要</span>}
+                  <p className="text-sub truncate">
                     {news.リンクURL ? (
-                      <a href={news.リンクURL} target="_blank" className="hover:text-[#b28c6e] underline decoration-stone-200 underline-offset-2">{news.内容}</a>
+                      <a href={news.リンクURL} target="_blank" className="hover:text-accent underline decoration-card-border underline-offset-2">{news.内容}</a>
                     ) : (
                       news.内容
                     )}
                   </p>
                 </div>
               ))}
-              {newsList.length === 0 && <p className="text-xs text-stone-300">現在、新しいお知らせはありません。</p>}
+              {newsList.length === 0 && <p className="text-xs text-muted">現在、新しいお知らせはありません。</p>}
             </div>
           </section>
         </div>
@@ -96,12 +100,12 @@ export default async function Page() {
       </div>
 
       {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
-      <Link href="/about" className="block w-full bg-stone-50 p-4 rounded-2xl text-xs font-bold text-stone-500 hover:bg-stone-100 transition-all text-center">
+      <Link href="/about" className="block w-full mt-6 bg-card/50 hover:bg-card p-4 text-xs font-bold text-sub transition-all text-center border-y border-card-border">
         このサイトについて・注意事項
       </Link>
       {/* フッター */}
         <footer className="py-20 text-center">
-          <p className="text-[10px] text-stone-300 font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
+          <p className="text-[10px] text-muted font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
         </footer>
     </main>
   );
