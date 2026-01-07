@@ -1,0 +1,36 @@
+const CATEGORY_PALETTES: Record<string, { bg: string; border: string; text: string }[]> = {
+  "警察": [
+    
+  ],
+  "医療": [
+    { bg: "#FFFFFE", border: "#9E3D3E", text: "#640125" }, // 梅 (白 × 蘇芳) × 葡萄色
+    { bg: "#FFFFFE", border: "#91B493", text: "#051419" }, // 柳 (白 × 淡青) × 五倍子鉄漿
+    { bg: "#FFFFFE", border: "#8E4898", text: "#051419" }, // 白躑躅 (白 × 紫) × 五倍子鉄漿
+  ],
+  "メカニック": [
+    
+  ],
+  "飲食店": [
+    { bg: "#282E89", border: "#91B493", text: "#FFFFFF" }, // 秘色 (瑠璃色 × 淡青) × 白
+    { bg: "#2980AF", border: "#0074A0", text: "#FFFFFF" }, // 花田 (縹 × 縹) × 白
+    { bg: "#2980AF", border: "#8E354A", text: "#FFFFFF" }, // 葡萄染 (蘇芳 × 縹) × 白
+  ],
+  "自宅": [
+    
+  ],
+  "住民の家": [
+    
+  ],
+  "車両・運輸": [
+    
+  ],
+  "販売": [
+    
+  ],
+  "金融": [
+    
+  ],
+  "その他": [
+    
+  ]
+};

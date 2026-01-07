@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Color Tester - Output Version</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function BarColorTester() {
+            // 初期値を「墨 × 藤」の設定にしています
+            const [bg, setBg] = useState('#373737');
+            const [border, setBorder] = useState('#BBBCDE');
+            const [text, setText] = useState('#FFFFFF');
+            const [colorName, setColorName] = useState('墨 × 藤');
+
+            const label = "サンプル地点の名前 12:00〜13:00";
+            
+            const barStyle = {
+                backgroundColor: bg,
+                borderColor: border,
+                color: text,
+                borderWidth: '1px',
+                borderLeftWidth: '3px',
+            };
+
+            useEffect(() => { lucide.createIcons(); }, [bg, border, text]);
+
+            // 指定されたフォーマットでの出力文字列
+            const outputString = `{ bg: "${bg}", border: "${border}", text: "${text}" }, // ${colorName}`;
+
+            return (
+                <div className="min-h-screen bg-gray-100 p-4 md:p-10 font-sans text-slate-800">
+                    <div className="max-w-4xl mx-auto space-y-6">
+                        
+                        {/* --- 設定エリア --- */}
+                        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 space-y-6">
+                            <h1 className="text-sm font-bold text-gray-400 tracking-widest uppercase">Color Configuration</h1>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <ColorInput label="背景色 (bg)" value={bg} onChange={setBg} />
+                                <ColorInput label="ボーダー (border)" value={border} onChange={setBorder} />
+                                <ColorInput label="文字色 (text)" value={text} onChange={setText} />
+                                <div className="flex flex-col gap-2">
+                                    <label className="text-[11px] font-bold text-gray-400 uppercase">色名 (コメント)</label>
+                                    <input 
+                                        type="text" 
+                                        value={colorName} 
+                                        onChange={(e) => setColorName(e.target.value)}
+                                        placeholder="例: 墨 × 藤"
+                                        className="bg-gray-50 p-2.5 rounded-xl border border-gray-100 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* --- プレビューエリア --- */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 px-2 text-gray-500 font-bold text-xs uppercase">
+                                    <i data-lucide="sun" className="w-4 h-4"></i> Light Mode
+                                </div>
+                                <div className="h-32 bg-white border border-gray-200 rounded-3xl flex items-center justify-center px-6 shadow-sm">
+                                    <div className="w-full h-10 rounded-lg text-[10px] font-bold flex items-center px-2 shadow-sm" style={barStyle}>
+                                        <span className="truncate">{label}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2 px-2 text-gray-400 font-bold text-xs uppercase">
+                                    <i data-lucide="moon" className="w-4 h-4"></i> Dark Mode
+                                </div>
+                                <div className="h-32 bg-[#121d3b] border border-white/5 rounded-3xl flex items-center justify-center px-6 shadow-xl">
+                                    <div className="w-full h-10 rounded-lg text-[10px] font-bold flex items-center px-2 shadow-sm" style={barStyle}>
+                                        <span className="truncate">{label}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* --- 出力エリア --- */}
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold text-gray-400 px-2 uppercase tracking-wider">Output Code</label>
+                            <div 
+                                className="bg-slate-900 p-5 rounded-2xl border border-slate-800 cursor-pointer hover:bg-slate-800 transition-colors group relative"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(outputString);
+                                    alert("コピーしました！");
+                                }}
+                            >
+                                <code className="text-emerald-400 text-sm font-mono break-all">
+                                    {outputString}
+                                </code>
+                                <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-slate-700 text-white text-[10px] px-2 py-1 rounded">
+                                    Click to Copy
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            );
+        }
+
+        function ColorInput({ label, value, onChange }) {
+            return (
+                <div className="flex flex-col gap-2">
+                    <label className="text-[11px] font-bold text-gray-400 uppercase">{label}</label>
+                    <div className="flex items-center gap-2 bg-gray-50 p-2 rounded-xl border border-gray-100 focus-within:ring-2 focus-within:ring-blue-500">
+                        <input 
+                            type="color" 
+                            value={value} 
+                            onChange={(e) => onChange(e.target.value.toUpperCase())} 
+                            className="w-8 h-8 rounded-md cursor-pointer bg-transparent border-none" 
+                        />
+                        <input 
+                            type="text" 
+                            value={value} 
+                            onChange={(e) => onChange(e.target.value.toUpperCase())} 
+                            className="flex-grow bg-transparent border-none text-sm font-mono focus:ring-0 p-0 outline-none" 
+                        />
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<BarColorTester />);
+    </script>
+</body>
+</html>
