@@ -31,7 +31,7 @@ export default async function Page() {
             Koyomi-ke Timeline
           </p>
           <div className="flex items-center gap-4">
-            <h1 className="text-3xl md:text-4xl font-bold text-stone-800 tracking-tight leading-none">
+            <h1 className="text-3xl md:text-4xl font-bold text-main tracking-tight leading-none">
               最新の記録 <span className="text-muted font-light ml-2">{latestDate}</span>
             </h1>
             {isLatestPreparing && (
