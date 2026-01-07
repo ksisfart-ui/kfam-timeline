@@ -58,19 +58,21 @@ export default async function DateDetailPage(props: {
     <main className="min-h-screen bg-background pb-20 transition-colors duration-300">
       {/* ヘッダーセクション */}
       <header className="px-8 py-12 max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
-        <Link
-          href="/archive"
-          className="text-muted text-[10px] font-bold tracking-[0.2em] hover:text-accent transition-colors flex items-center gap-1 mb-6 uppercase"
-        >
-          <ChevronLeft className="w-3 h-3" /> Back to Archives
-        </Link>
-        <div className="space-y-2">
-          <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
-            Observation Logfile
-          </p>
-          <h1 className="text-3xl md:text-4xl font-bold text-main tracking-tight leading-none">
-            {displayDate} <span className="text-muted font-normal ml-2 text-2xl">の記録詳細</span>
-          </h1>
+        <div className="flex-grow">
+          <Link
+            href="/archive"
+            className="text-muted text-[10px] font-bold tracking-[0.2em] hover:text-accent transition-colors flex items-center gap-1 mb-6 uppercase"
+          >
+            <ChevronLeft className="w-3 h-3" /> Back to Archives
+          </Link>
+          <div className="space-y-2">
+            <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
+              Observation Logfile
+            </p>
+            <h1 className="text-3xl md:text-4xl font-bold text-main tracking-tight leading-none">
+              {displayDate} <span className="text-muted font-normal ml-2 text-2xl">の記録詳細</span>
+            </h1>
+          </div>
         </div>
 
         {/* モード切替ボタンを追加 */}
