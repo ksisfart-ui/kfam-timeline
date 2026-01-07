@@ -70,7 +70,7 @@ export default async function DateDetailPage(props: {
               Observation Logfile
             </p>
             <h1 className="text-3xl md:text-4xl font-bold text-main tracking-tight leading-none">
-              {displayDate} <span className="text-muted font-normal ml-2 text-2xl">の記録詳細</span>
+              {displayDate} <span className="text-muted font-normal ml-2 text-2xl">の記録</span>
             </h1>
           </div>
         </div>
