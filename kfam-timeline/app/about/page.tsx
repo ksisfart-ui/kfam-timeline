@@ -1,23 +1,34 @@
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-background p-6 md:p-12 text-sub font-sans tracking-tight">
       <div className="max-w-2xl mx-auto">
         
-        {/* ヘッダー部分 */}
-        <header className="mb-12">
-          <Link href="/" className="text-muted text-[10px] font-bold tracking-[0.2em] hover:text-accent transition-colors flex items-center gap-1 mb-8 uppercase">
-            ← Back to Home
-          </Link>
-          <div className="space-y-2">
-            <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
-              About this project
-            </p>
-            <h1 className="text-3xl md:text-4xl font-bold text-main tracking-tight leading-none">
-              このサイトについて
-            </h1>
+        {/* ヘッダー部分：flexコンテナにしてToggleを配置 */}
+        <header className="mb-12 flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+          <div className="flex-grow">
+            <Link 
+              href="/" 
+              className="text-muted text-[10px] font-bold tracking-[0.2em] hover:text-accent transition-colors flex items-center gap-1 mb-8 uppercase"
+            >
+              <ChevronLeft className="w-3 h-3" /> Back to Home
+            </Link>
+            <div className="space-y-2">
+              <p className="text-accent text-[10px] font-bold tracking-[0.4em] uppercase pl-1">
+                About this project
+              </p>
+              <h1 className="text-3xl md:text-4xl font-bold text-main tracking-tight leading-none">
+                このサイトについて
+              </h1>
+            </div>
+          </div>
+
+          {/* モード切替ボタンを配置 */}
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
           </div>
         </header>
 
@@ -42,8 +53,8 @@ export default function AboutPage() {
             
             <div className="space-y-8">
               {[
-                { label: "公式との関係", text: "各配信者様、および運営様とは一切関係ありません。また、予告なく非公開にする場合がございます。", important: true },
-                { label: "更新について", text: "有志による手動更新のため、リアルタイムではありません。情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。" },
+                { label: "公式との関係", text: "各配信者様、および運営様とは一切関係ありません。", important: true },
+                { label: "更新について", text: "個人が手動で更新しているため、リアルタイムではありません。情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。" },
                 { label: "時間表記", text: "表示時間は目安です。実際の配信や滞在時間とは数分のズレが生じる場合があります。" },
                 { label: "ネタバレ", text: "物語のネタバレが含まれます。未視聴の配信がある場合は十分にご注意ください。", important: true },
               ].map((item, idx) => (
@@ -64,7 +75,7 @@ export default function AboutPage() {
                   <div>
                     <span className="block text-[9px] font-black text-status-urgent-text tracking-widest uppercase mb-1.5">Important Warning</span>
                     <p className="text-[13px] leading-relaxed text-main">
-                      <strong className="font-bold text-main">メタ情報の取り扱い：</strong>
+                      <strong className="font-bold text-main">情報の取り扱い：</strong>
                       本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為（鳩・指示コメント等）に絶対に使用しないでください。
                     </p>
                   </div>
