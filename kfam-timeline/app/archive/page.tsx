@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { fetchArchiveData } from "@/lib/dataFetcher";
 import { groupDatesByMonth } from "@/lib/utils";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ArrowRight } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function ArchivePage() {
@@ -68,7 +68,7 @@ export default function ArchivePage() {
               {dates.map(date => (
                 <Link key={date} href={`/archive/${date.replaceAll("/", "-")}`} className="group p-8 bg-card rounded-[2rem] border border-card-border hover:border-accent transition-all hover:shadow-xl flex justify-between items-center">
                   <span className="text-2xl font-bold text-main group-hover:text-accent transition-colors tracking-tighter">{date}</span>
-                  <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center group-hover:bg-accent-soft group-hover:text-accent text-mute transition-all text-xl">→</div>
+                  <ArrowRight className="w-12 h-12 rounded-full bg-background flex items-center justify-center group-hover:bg-accent-soft group-hover:text-accent text-mute transition-all text-xl" />
                 </Link>
               ))}
             </div>
