@@ -68,7 +68,7 @@ export default function ArchivePage() {
               {dates.map(date => (
                 <Link key={date} href={`/archive/${date.replaceAll("/", "-")}`} className="group p-8 bg-card rounded-[2rem] border border-card-border hover:border-accent transition-all hover:shadow-xl flex justify-between items-center">
                   <span className="text-2xl font-bold text-main group-hover:text-accent transition-colors tracking-tighter">{date}</span>
-                  <ArrowRight className="w-12 h-12 rounded-full bg-background flex items-center justify-center group-hover:bg-accent-soft group-hover:text-accent text-mute transition-all text-xl" />
+                  <ArrowRight className="w-6 h-6 rounded-full bg-background flex items-center justify-center group-hover:bg-accent-soft group-hover:text-accent text-mute transition-all text-xl" />
                 </Link>
               ))}
             </div>
