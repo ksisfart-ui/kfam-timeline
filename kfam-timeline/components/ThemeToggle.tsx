@@ -1,6 +1,7 @@
 'use client'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { Moon, Sun } from 'lucide-react';
 
 export default function ThemeToggle() {
   const [mounted, setMounted] = useState(false)
@@ -33,7 +34,11 @@ export default function ThemeToggle() {
           isDark ? 'translate-x-0' : 'translate-x-6'
         }`}
       >
-        {isDark ? '🌙' : '☀️'}
+        {isDark ? <Moon className="w-3 h-3 text-gray-800" /> : <Sun className="w-3 h-3 text-gray-500" />}
+      </div>
+      <div className="flex justify-around w-full px-1">
+        <Sun className={`${isDark ? 'opacity-30' : 'opacity-0'}`} />
+        <Moon className={`${isDark ? 'opacity-0' : 'opacity-30'}`} />
       </div>
     </button>
   )
