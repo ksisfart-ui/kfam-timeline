@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft, ExternalLink, ChevronRight } from "lucide-react";
+import { ChevronLeft, ExternalLink, ChevronRight, Link } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AboutPage() {
@@ -87,7 +87,7 @@ export default function AboutPage() {
           <section className="px-1">
             <div className="flex items-center gap-3 mb-6">
               <h2 className="text-main font-black text-lg flex items-center gap-2">
-                <ExternalLink className="w-5 h-5 text-accent" /> 関連リンク
+                <Link className="w-5 h-5 text-accent" /> 関連リンク
               </h2>
               <div className="h-[1px] flex-grow bg-card-border"></div>
               <span className="text-[10px] font-black tracking-[0.2em] text-accent uppercase">Related Links</span>
