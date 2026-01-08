@@ -245,7 +245,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                 <div key={idx} className="relative">
                   {idx !== 0 && <div className="absolute -top-5 left-0 right-0 border-t border-card-border" />}
                   {idx === 0 && (
-                    <div className="mb-4 text-center sm:text-left">
+                    <div className="mt-1 mb-2 text-center sm:text-left">
                       <h2 className="text-3xl font-bold text-main tracking-tight">{item.暦家}</h2>
                     </div>
                   )}
