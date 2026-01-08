@@ -4,7 +4,7 @@
 :root {
   /* ライトモード: 画像2枚目のオリジナルカラーを再現 */
   --background: #fcfaf8;
-  --card-bg: #ffffff;
+  --card-bg: #fffffe;
   --card-border: rgba(120, 113, 108, 0.1);
   --text-main: #292524;    /* stone-800: メインの文字色 */
   --text-sub: #78716c;     /* stone-500: 補足テキスト */
