@@ -1,5 +1,13 @@
 import Link from "next/link";
-import { ChevronLeft, ExternalLink, ChevronRight, Link2 } from "lucide-react";
+import { 
+  ChevronLeft, 
+  ExternalLink, 
+  ChevronRight, 
+  Link2, 
+  TriangleAlert, 
+  CircleAlert, 
+  User 
+} from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AboutPage() {
@@ -45,7 +53,7 @@ export default function AboutPage() {
           <section className="px-1">
             <div className="flex items-center gap-3 mb-8">
               <h2 className="text-main font-black text-lg flex items-center gap-2">
-                <span className="text-base">⚠️</span> 注意事項
+                <TriangleAlert className="w-5 h-5 text-accent" /> 注意事項
               </h2>
               <div className="h-[1px] flex-grow bg-card-border"></div>
               <span className="text-[10px] font-black tracking-[0.2em] text-accent uppercase">Precautions</span>
@@ -56,7 +64,7 @@ export default function AboutPage() {
                 { label: "公式との関係", text: "各配信者様、および運営様とは一切関係ありません。", important: true },
                 { label: "更新について", text: "個人が手動で更新しているため、リアルタイムではありません。情報の正確性には努めておりますが、間違いや抜け漏れが含まれる可能性があります。" },
                 { label: "時間表記", text: "表示時間は目安です。実際の配信や滞在時間とは数分のズレが生じる場合があります。" },
-                { label: "ネタバレ", text: "物語のネタバレが含まれます。未視聴の配信がある場合は十分にご注意ください。", important: true },
+                { label: "ネタバレ", text: "暦家や他住民の物語の内容が含まれます。未視聴の配信がある場合は十分にご注意ください。", important: true },
               ].map((item, idx) => (
                 <div key={idx} className="grid grid-cols-1 md:grid-cols-[130px_1fr] gap-1 md:gap-6 items-start">
                   <span className="text-[10px] font-black text-accent tracking-widest uppercase pt-1">
@@ -71,12 +79,12 @@ export default function AboutPage() {
               {/* メタ情報：重要な警告 */}
               <div className="mt-10 p-7 bg-card rounded-[1.5rem] border border-status-urgent-text/20 shadow-sm">
                 <div className="flex gap-4 items-start">
-                  <span className="text-status-urgent-text font-black text-lg leading-none">!</span>
+                  <CircleAlert className="w-6 h-6 text-status-urgent-text shrink-0" />
                   <div>
                     <span className="block text-[9px] font-black text-status-urgent-text tracking-widest uppercase mb-1.5">Important Warning</span>
                     <p className="text-[13px] leading-relaxed text-main">
                       <strong className="font-bold text-main">情報の取り扱い：</strong>
-                      本サイトの情報を、特定の人物への攻撃や、RP（ロールプレイ）の進行を妨げるような行為（鳩・指示コメント等）に絶対に使用しないでください。
+                      本サイトの情報を、特定の人物・団体への攻撃や、RP（ロールプレイ）の進行を妨げるような行為（鳩・指示コメント等）に絶対に使用しないでください。
                     </p>
                   </div>
                 </div>
