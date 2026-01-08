@@ -38,7 +38,7 @@ export default function ThemeToggle() {
         {isDark ? (
           <Moon className="w-4 h-4 text-gray-800" />
         ) : (
-          <Sun className="w-4 h-4 text-orange-500" />
+          <Sun className="w-4 h-4 text-[#ecc129]" />
         )}
       </div>
     </button>
