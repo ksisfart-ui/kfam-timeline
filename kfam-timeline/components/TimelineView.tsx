@@ -258,7 +258,7 @@ export default function TimelineView({ data }: { data: ArchiveData[] }) {
                       </div>
                     </div>
                     <div className="flex items-center gap-4 bg-background p-4 rounded-2xl border border-card-border">
-                      <div className="w-10 h-10 bg-card rounded-xl shadow-sm flex items-center justify-center text-muted text-lg flex-shrink-0 border border-card-border"><Clock className="w-5 h-5" /></div>
+                      <div className="w-10 h-10 bg-card rounded-xl shadow-sm flex items-center justify-center text-accent text-lg flex-shrink-0 border border-card-border"><Clock className="w-5 h-5" /></div>
                       <div>
                         <p className="text-[10px] text-muted font-bold uppercase">時間</p>
                         <p className="font-bold font-mono text-lg text-main">{item.開始時間} 〜 {item.終了時間}</p>
