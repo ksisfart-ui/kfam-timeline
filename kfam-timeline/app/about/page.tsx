@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, ExternalLink, ChevronRight } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function AboutPage() {
@@ -87,7 +87,7 @@ export default function AboutPage() {
           <section className="px-1">
             <div className="flex items-center gap-3 mb-6">
               <h2 className="text-main font-black text-lg flex items-center gap-2">
-                <span className="text-base">🔗</span> 関連リンク
+                <ExternalLink className="w-5 h-5 text-accent" /> 関連リンク
               </h2>
               <div className="h-[1px] flex-grow bg-card-border"></div>
               <span className="text-[10px] font-black tracking-[0.2em] text-accent uppercase">Related Links</span>
@@ -97,15 +97,18 @@ export default function AboutPage() {
               href="https://kfam-portal.vercel.app/" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center justify-between p-6 bg-card rounded-[1.5rem] border border-card-border shadow-sm hover:border-accent transition-all group"
+              className="flex items-center justify-between p-6 bg-card rounded-[1.5rem] border border-card-border shadow-sm hover:border-accent hover:shadow-md transition-all group"
             >
-              <div>
-                <p className="text-[9px] font-black text-accent tracking-widest uppercase mb-1">Portal Site</p>
-                <p className="text-main font-bold text-sm md:text-base">暦家観測記録</p>
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-background rounded-xl border border-card-border group-hover:border-accent transition-colors">
+                  <ExternalLink className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-[9px] font-black text-accent tracking-widest uppercase mb-0.5">Portal Site</p>
+                  <p className="text-main font-bold text-sm md:text-base">暦家観測記録</p>
+                </div>
               </div>
-              <div className="text-muted group-hover:text-accent transition-colors">
-                <span className="text-xl">↗</span>
-              </div>
+              <ChevronRight className="w-5 h-5 text-muted group-hover:text-accent group-hover:translate-x-1 transition-all" />
             </a>
           </section>
 

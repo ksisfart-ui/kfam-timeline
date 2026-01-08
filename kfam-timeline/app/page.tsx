@@ -1,7 +1,7 @@
 import { fetchArchiveData, fetchNewsData } from "@/lib/dataFetcher";
 import TimelineView from "@/components/TimelineView";
 import Link from "next/link";
-import { Megaphone, Info } from "lucide-react";
+import { Megaphone, Info, ExternalLink, ChevronRight } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export const dynamic = 'force-dynamic';
@@ -100,19 +100,40 @@ export default async function Page() {
       </div>
 
       {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
-      <div className="mt-6 border-t border-card-border">
-        <Link href="/about" className="block w-full mt-6 bg-card/50 hover:bg-card p-4 text-xs font-bold text-sub transition-all text-center border-y border-card-border">
-        <Info className="w-4 h-4 shrink-0" /> About & Link
-        </Link>
-        {/* 追加：ポータルサイトへのリンク */}
+      <div className="mt-12 max-w-md mx-auto px-4">
+        <div className="flex flex-col border-t border-card-border/60">
+          
+          {/* About へのリンク */}
+          <Link 
+            href="/about" 
+            className="group flex items-center justify-between py-5 border-b border-card-border/60 hover:px-2 transition-all duration-300"
+          >
+            <div className="flex items-center gap-3">
+              <Info className="w-4 h-4 text-accent/70 group-hover:text-accent transition-colors" />
+              <span className="text-[11px] font-bold tracking-widest text-sub group-hover:text-main transition-colors uppercase">
+                About & Link
+              </span>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-muted group-hover:translate-x-1 transition-transform" />
+          </Link>
+
+          {/* ポータルへのリンク */}
           <a 
             href="https://kfam-portal.vercel.app/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="block w-full bg-card/50 hover:bg-card p-4 text-xs font-bold text-sub transition-all text-center border-b border-card-border"
+            className="group flex items-center justify-between py-5 border-b border-card-border/60 hover:px-2 transition-all duration-300"
           >
-            暦家観測記録 <span className="text-[10px] ml-1">↗</span>
+            <div className="flex items-center gap-3">
+              <ExternalLink className="w-4 h-4 text-accent/70 group-hover:text-accent transition-colors" />
+              <span className="text-[11px] font-bold tracking-widest text-sub group-hover:text-main transition-colors uppercase">
+                暦家観測記録
+              </span>
+            </div>
+            <ChevronRight className="w-3.5 h-3.5 text-muted group-hover:translate-x-1 transition-transform" />
           </a>
+
+        </div>
       </div>
       
 
