@@ -24,8 +24,8 @@ export default function ThemeToggle() {
     >
       {/* 背景のアイコン配置 */}
       <div className="flex justify-between items-center w-full px-1.5 text-[10px]">
-        <span>🌙</span>
-        <span>☀️</span>
+        <Moon className="w=3 h=3 text-gray-800" />
+        <Sun className="w=3 h=3 text-orange-500" />
       </div>
 
       {/* スライドする丸部分 */}
@@ -34,11 +34,7 @@ export default function ThemeToggle() {
           isDark ? 'translate-x-0' : 'translate-x-6'
         }`}
       >
-        {isDark ? <Moon className="w-3 h-3 text-gray-800" /> : <Sun className="w-3 h-3 text-gray-500" />}
-      </div>
-      <div className="flex justify-around w-full px-1">
-        <Sun className={`${isDark ? 'opacity-30' : 'opacity-0'}`} />
-        <Moon className={`${isDark ? 'opacity-0' : 'opacity-30'}`} />
+        {isDark ? <Moon className="w=3 h=3 text-gray-800" /> : <Sun className="w=3 h=3 text-orange-500" />}
       </div>
     </button>
   )
