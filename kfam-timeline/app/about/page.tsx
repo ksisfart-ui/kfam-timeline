@@ -84,6 +84,31 @@ export default function AboutPage() {
             </div>
           </section>
 
+          <section className="px-1">
+            <div className="flex items-center gap-3 mb-6">
+              <h2 className="text-main font-black text-lg flex items-center gap-2">
+                <span className="text-base">🔗</span> 関連リンク
+              </h2>
+              <div className="h-[1px] flex-grow bg-card-border"></div>
+              <span className="text-[10px] font-black tracking-[0.2em] text-accent uppercase">Related Links</span>
+            </div>
+            
+            <a 
+              href="https://kfam-portal.vercel.app/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center justify-between p-6 bg-card rounded-[1.5rem] border border-card-border shadow-sm hover:border-accent transition-all group"
+            >
+              <div>
+                <p className="text-[9px] font-black text-accent tracking-widest uppercase mb-1">Portal Site</p>
+                <p className="text-main font-bold text-sm md:text-base">暦家観測記録</p>
+              </div>
+              <div className="text-muted group-hover:text-accent transition-colors">
+                <span className="text-xl">↗</span>
+              </div>
+            </a>
+          </section>
+
           {/* 制作者情報：Screenshot 5のUIを維持 */}
           <section className="pt-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6 p-7 bg-card rounded-[1.5rem] border border-card-border shadow-sm">

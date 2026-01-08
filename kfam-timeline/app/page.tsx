@@ -100,9 +100,22 @@ export default async function Page() {
       </div>
 
       {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
-      <Link href="/about" className="block w-full mt-6 bg-card/50 hover:bg-card p-4 text-xs font-bold text-sub transition-all text-center border-y border-card-border">
-        このサイトについて・注意事項
-      </Link>
+      <div className="mt-6 border-t border-card-border">
+        <Link href="/about" className="block w-full mt-6 bg-card/50 hover:bg-card p-4 text-xs font-bold text-sub transition-all text-center border-y border-card-border">
+        <Info className="w-4 h-4 shrink-0" /> About & Link
+        </Link>
+        {/* 追加：ポータルサイトへのリンク */}
+          <a 
+            href="https://kfam-portal.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block w-full bg-card/50 hover:bg-card p-4 text-xs font-bold text-sub transition-all text-center border-b border-card-border"
+          >
+            暦家観測記録 <span className="text-[10px] ml-1">↗</span>
+          </a>
+      </div>
+      
+
       {/* フッター */}
         <footer className="py-20 text-center">
           <p className="text-[10px] text-muted font-black tracking-[0.5em] uppercase">Unofficial Timeline</p>
