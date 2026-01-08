@@ -99,14 +99,14 @@ export default async function Page() {
         <TimelineView data={latestData} />
       </div>
 
-      {/* セクション下部にも「このサイトについて」を配置（視認性向上のため） */}
-      <div className="mt-12 max-w-md mx-auto px-4">
-        <div className="flex flex-col border-t border-card-border/60">
+      {/* セクション下部のリンクエリア：PC版で横並び、スマホ版で縦並び */}
+      <div className="mt-12 max-w-md md:max-w-2xl mx-auto px-4">
+        <div className="flex flex-col md:flex-row border-t border-card-border/60">
           
           {/* About へのリンク */}
           <Link 
             href="/about" 
-            className="group flex items-center justify-between py-5 border-b border-card-border/60 hover:px-2 transition-all duration-300"
+            className="group flex-1 flex items-center justify-between py-5 md:py-6 md:px-6 border-b border-card-border/60 md:border-r hover:bg-card/30 transition-all duration-300"
           >
             <div className="flex items-center gap-3">
               <Info className="w-4 h-4 text-accent/70 group-hover:text-accent transition-colors" />
@@ -122,7 +122,7 @@ export default async function Page() {
             href="https://kfam-portal.vercel.app/" 
             target="_blank" 
             rel="noopener noreferrer"
-            className="group flex items-center justify-between py-5 border-b border-card-border/60 hover:px-2 transition-all duration-300"
+            className="group flex-1 flex items-center justify-between py-5 md:py-6 md:px-6 border-b border-card-border/60 hover:bg-card/30 transition-all duration-300"
           >
             <div className="flex items-center gap-3">
               <ExternalLink className="w-4 h-4 text-accent/70 group-hover:text-accent transition-colors" />
