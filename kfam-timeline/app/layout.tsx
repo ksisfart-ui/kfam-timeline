@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "暦家タイムライン", // サイトごとに書き換える
-  description: "「暦家」の一日の行動を、タイムライン形式で見返せる非公式ファンサイト。",
+  description: "「暦家」の一日の行動を、タイムライン形式で見返せる非公式ファンサイト",
   // 公開するURLが決まったら指定
   metadataBase: new URL("https://kfam-timeline.vercel.app"), 
 };
