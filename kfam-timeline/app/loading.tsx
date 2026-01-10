@@ -11,7 +11,7 @@ export default function Loading() {
         {/* ローディングアニメーション（任意） */}
         <div className="animate-spin h-8 w-8 border-4 border-accent border-t-transparent rounded-full mx-auto" />
         
-        <p className="text-main font-bold tracking-widest animate-pulse">
+        <p className="text-sub font-bold text-sm tracking-widest animate-pulse">
           {randomMessage}
         </p>
       </div>
