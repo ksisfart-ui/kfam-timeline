@@ -14,7 +14,7 @@ export default function SiteSwitcher() {
   return (
     // z-index を高めに設定し、ページ最下部に固定
     <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
-      <div className="flex items-center gap-1 bg-card/80 dark:bg-zinc-900/80 backdrop-blur-xl p-1.5 rounded-2xl border border-card-border shadow-2xl">
+      <div className="flex items-center gap-1 bg-card/80 backdrop-blur-xl p-1.5 rounded-2xl border border-card-border shadow-2xl">
         {sites.map((site) => {
           const Icon = site.icon;
           return (

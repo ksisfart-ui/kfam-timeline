@@ -99,43 +99,6 @@ export default async function Page() {
 
         <TimelineView data={latestData} />
       </div>
-
-      {/* セクション下部のリンクエリア：PC版で横並び、スマホ版で縦並び */}
-      <div className="mt-12 max-w-md md:max-w-2xl mx-auto px-4">
-        <div className="flex flex-col md:flex-row border-t border-card-border/60">
-          
-          {/* About へのリンク */}
-          <Link 
-            href="/about" 
-            className="group flex-1 flex items-center justify-between py-5 md:py-6 md:px-6 border-b border-card-border/60 md:border-r hover:bg-card/30 transition-all duration-300"
-          >
-            <div className="flex items-center gap-3">
-              <Info className="w-4 h-4 text-accent/70 group-hover:text-accent transition-colors" />
-              <span className="text-[11px] font-bold tracking-widest text-sub group-hover:text-main transition-colors uppercase">
-                About & Link
-              </span>
-            </div>
-            <ChevronRight className="w-3.5 h-3.5 text-muted group-hover:translate-x-1 transition-transform" />
-          </Link>
-
-          {/* ポータルへのリンク */}
-          <a 
-            href="https://kfam-portal.vercel.app/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="group flex-1 flex items-center justify-between py-5 md:py-6 md:px-6 border-b border-card-border/60 hover:bg-card/30 transition-all duration-300"
-          >
-            <div className="flex items-center gap-3">
-              <ExternalLink className="w-4 h-4 text-accent/70 group-hover:text-accent transition-colors" />
-              <span className="text-[11px] font-bold tracking-widest text-sub group-hover:text-main transition-colors uppercase">
-                暦家観測記録
-              </span>
-            </div>
-            <ChevronRight className="w-3.5 h-3.5 text-muted group-hover:translate-x-1 transition-transform" />
-          </a>
-
-        </div>
-      </div>
       
 
       {/* フッター */}
