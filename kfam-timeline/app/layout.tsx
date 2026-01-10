@@ -14,10 +14,16 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "暦家タイムライン", // サイトごとに書き換える
+  title: {
+    default: '暦家タイムライン',
+    template: '%s | 暦家タイムライン' // 子ページで「〇〇月〇〇日 | 暦家タイムライン」と表示される
+  },
   description: "「暦家」の一日の行動を、タイムライン形式で見返せる非公式ファンサイト",
   // 公開するURLが決まったら指定
   metadataBase: new URL("https://kfam-timeline.vercel.app"), 
+  alternates: {
+    canonical: '/', // ★そのページの正規URLを指定。トップなら '/' でOK
+  },
 };
 
 export const viewport: Viewport = {
