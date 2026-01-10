@@ -3,6 +3,7 @@ import TimelineView from "@/components/TimelineView";
 import Link from "next/link";
 import { Megaphone, Info, ExternalLink, ChevronRight } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { LOADING_MESSAGES } from "@/lib/constants";
 
 export const dynamic = 'force-dynamic';
 

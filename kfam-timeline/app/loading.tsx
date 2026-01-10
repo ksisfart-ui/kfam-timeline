@@ -1,20 +1,20 @@
-import React from 'react';
+// app/your-directory/loading.tsx
+import { LOADING_MESSAGES } from "@/lib/constants";
 
 export default function Loading() {
-  const messages = [
-    "姉妹の活動記録を読み込んでいます...",
-    "姉妹の足跡を復元中...",
-    "保管庫より該当資料を持ち出し中...",
-    "衛星の記録を同期中...",
-    "観測ログにアクセスしています..."
-  ];
-// サーバーサイドでも動作するよう、表示用の簡易実装
-  const msg = messages[0];
+  // サーバー側でレンダリングされる際、ランダムに1つ選択
+  const randomMessage = LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)];
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-background transition-colors duration-300">
-      <div className="w-10 h-10 border-4 border-card-border border-t-accent rounded-full animate-spin mb-6" />
-      <p className="text-sub font-bold text-sm tracking-widest">{msg}</p>
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center space-y-4">
+        {/* ローディングアニメーション（任意） */}
+        <div className="animate-spin h-8 w-8 border-4 border-accent border-t-transparent rounded-full mx-auto" />
+        
+        <p className="text-main font-bold tracking-widest animate-pulse">
+          {randomMessage}
+        </p>
+      </div>
     </div>
   );
 }
