@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import SiteSwitcher from "@/components/SiteSwitcher";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,6 +43,7 @@ export default function RootLayout({
         {/* 手動切り替えを有効にするため attribute="class" を指定 */}
         <ThemeProvider attribute="class" defaultTheme="light">
           {children}
+          <SiteSwitcher />
         </ThemeProvider>
       </body>
     </html>
